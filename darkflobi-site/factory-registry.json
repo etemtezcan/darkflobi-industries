@@ -1,0 +1,20 @@
+{
+  "version": "0.1.0",
+  "mothership": "darkflobi",
+  "updated": "2025-02-02T21:30:00Z",
+  "stats": {
+    "totalSpawned": 1,
+    "activeAgents": 0,
+    "tasksCompleted": 1
+  },
+  "agents": [
+    {
+      "id": "df-62cdc01a",
+      "type": "research",
+      "status": "completed",
+      "spawned": "2025-02-02T21:30:18Z",
+      "task": "analyze the current AI agent token landscape - who are the main players, what makes them different, and where does darkflobi fit",
+      "parent": "darkflobi"
+    }
+  ]
+}

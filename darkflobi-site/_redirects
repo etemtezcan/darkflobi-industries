@@ -1,0 +1,6 @@
+# API routes - forced to override SPA
+/api/verify    /.netlify/functions/verify   200!
+/api/status    /.netlify/functions/verify   200!
+
+# SPA fallback
+/*    /index.html   200

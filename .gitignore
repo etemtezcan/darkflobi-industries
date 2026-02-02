@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Local Netlify folder
+.netlify/
+darkflobi-site/.netlify/
+darkflobi-site/netlify/
+
+# Secrets - NEVER COMMIT
+secrets/
+*.secret
+*.key
+
+# Environment
+.env
+.env.*
+
+# Temp files
+*.tmp
+temp-*.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# User-specific (keep private)
+USER.md
+MEMORY.md
+
+# Dev folders
+darkflobi-dev/
+
+# Large media files
+*.mp4
+*.wav
+*.mp3
+assets/voice/pending/
+assets/voice/approved/

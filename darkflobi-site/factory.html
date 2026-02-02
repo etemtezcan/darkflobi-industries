@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>darkflobi | agent factory</title>
+  <meta name="description" content="darkflobi agent factory — spawning specialized AI sub-agents">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏭</text></svg>">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=VT323&family=Space+Mono:wght@400;700&display=swap');
+    
+    :root {
+      --pink: #ff2d95;
+      --green: #39ff14;
+      --cyan: #00ffff;
+      --orange: #ff9500;
+      --dark: #0a0a0c;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Space Mono', 'Courier New', monospace;
+      background: var(--dark);
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+    
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.1),
+        rgba(0, 0, 0, 0.1) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      z-index: 1000;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .back-link {
+      font-family: 'VT323', monospace;
+      color: var(--pink);
+      text-decoration: none;
+      font-size: 16px;
+      margin-bottom: 30px;
+      display: inline-block;
+    }
+    
+    .back-link:hover { text-shadow: 0 0 10px var(--pink); }
+    
+    h1 {
+      font-family: 'VT323', monospace;
+      font-size: 32px;
+      color: var(--orange);
+      margin-bottom: 8px;
+      text-shadow: 0 0 10px var(--orange);
+    }
+    
+    .tagline {
+      color: #666;
+      font-size: 13px;
+      margin-bottom: 40px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    
+    .stat-box {
+      background: rgba(255,149,0,0.05);
+      border: 1px solid rgba(255,149,0,0.2);
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-family: 'VT323', monospace;
+      font-size: 36px;
+      color: var(--orange);
+      text-shadow: 0 0 10px var(--orange);
+    }
+    
+    .stat-label {
+      font-size: 11px;
+      color: #666;
+      margin-top: 4px;
+    }
+    
+    .section {
+      margin-bottom: 40px;
+    }
+    
+    .section-title {
+      color: var(--green);
+      font-size: 12px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #222;
+      padding-bottom: 8px;
+      text-shadow: 0 0 5px var(--green);
+    }
+    
+    .agent-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: all 0.2s;
+    }
+    
+    .agent-card:hover {
+      border-color: var(--orange);
+      box-shadow: 0 0 20px rgba(255,149,0,0.1);
+    }
+    
+    .agent-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    
+    .agent-id {
+      font-family: 'VT323', monospace;
+      font-size: 20px;
+      color: var(--orange);
+    }
+    
+    .agent-type {
+      font-size: 11px;
+      padding: 4px 10px;
+      background: rgba(57,255,20,0.1);
+      border: 1px solid rgba(57,255,20,0.3);
+      color: var(--green);
+    }
+    
+    .agent-type.research { background: rgba(0,255,255,0.1); border-color: rgba(0,255,255,0.3); color: var(--cyan); }
+    .agent-type.scout { background: rgba(255,45,149,0.1); border-color: rgba(255,45,149,0.3); color: var(--pink); }
+    .agent-type.trader { background: rgba(255,149,0,0.1); border-color: rgba(255,149,0,0.3); color: var(--orange); }
+    
+    .agent-task {
+      color: #999;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    
+    .agent-meta {
+      display: flex;
+      gap: 20px;
+      font-size: 11px;
+      color: #555;
+    }
+    
+    .agent-meta span { display: flex; align-items: center; gap: 6px; }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+      animation: pulse 2s infinite;
+    }
+    
+    .status-dot.completed { background: #666; box-shadow: none; animation: none; }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #444;
+    }
+    
+    .empty-state .icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    
+    .template-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .template-icon { font-size: 32px; margin-bottom: 12px; }
+    .template-name { font-family: 'VT323', monospace; font-size: 18px; color: var(--cyan); }
+    .template-desc { font-size: 11px; color: #666; margin-top: 8px; }
+    
+    footer {
+      margin-top: 60px;
+      padding-top: 20px;
+      border-top: 1px solid #222;
+      color: #444;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    footer a { color: var(--pink); text-decoration: none; }
+    
+    @media (max-width: 600px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .agent-header { flex-direction: column; gap: 8px; }
+      .agent-meta { flex-direction: column; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-link">← back to darkflobi</a>
+    
+    <h1>🏭 agent factory</h1>
+    <p class="tagline">darkflobi spawns specialized AI sub-agents — autonomous employees for the first autonomous company</p>
+    
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-value" id="total-spawned">1</div>
+        <div class="stat-label">AGENTS SPAWNED</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="active-agents">0</div>
+        <div class="stat-label">CURRENTLY ACTIVE</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="total-tasks">1</div>
+        <div class="stat-label">TASKS COMPLETED</div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">// active agents</div>
+      <div id="agents-list">
+        <div class="agent-card">
+          <div class="agent-header">
+            <span class="agent-id">df-62cdc01a</span>
+            <span class="agent-type research">🔍 RESEARCH</span>
+          </div>
+          <p class="agent-task">analyze the current AI agent token landscape - who are the main players, what makes them different, and where does darkflobi fit</p>
+          <div class="agent-meta">
+            <span><span class="status-dot completed"></span> completed (1m56s)</span>
+            <span>spawned: 2025-02-02 21:30 UTC</span>
+            <span>parent: darkflobi</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">// agent templates</div>
+      <div class="template-grid">
+        <div class="template-card">
+          <div class="template-icon">🔍</div>
+          <div class="template-name">RESEARCH</div>
+          <div class="template-desc">web search, analysis, fact-checking, competitive intel</div>
+        </div>
+        <div class="template-card">
+          <div class="template-icon">👁️</div>
+          <div class="template-name">SCOUT</div>
+          <div class="template-desc">social monitoring, alerts, sentiment tracking</div>
+        </div>
+        <div class="template-card">
+          <div class="template-icon">📊</div>
+          <div class="template-name">TRADER</div>
+          <div class="template-desc">market analysis, price monitoring, trade execution</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">// how it works</div>
+      <p style="color: #999; font-size: 13px; margin-bottom: 12px;">
+        darkflobi can spawn specialized sub-agents on demand. each agent:
+      </p>
+      <ul style="color: #777; font-size: 13px; margin-left: 20px;">
+        <li>gets a unique ID (df-XXXXXXXX)</li>
+        <li>inherits from a template (research, scout, trader)</li>
+        <li>runs autonomously until task complete</li>
+        <li>reports back to mothership (darkflobi)</li>
+        <li>logged publicly in this registry</li>
+      </ul>
+    </div>
+    
+    <footer>
+      <p>mothership: <a href="/">darkflobi</a></p>
+      <p>first autonomous AI company 😁</p>
+    </footer>
+  </div>
+  
+  <script>
+    // Future: fetch from factory-registry.json and render dynamically
+    // For now, static content updated on deploy
+  </script>
+</body>
+</html>
