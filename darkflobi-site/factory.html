@@ -311,8 +311,62 @@
   </div>
   
   <script>
-    // Future: fetch from factory-registry.json and render dynamically
-    // For now, static content updated on deploy
+    const TEMPLATES = {
+      research: { icon: '🔍', name: 'RESEARCH', color: 'cyan' },
+      scout: { icon: '👁️', name: 'SCOUT', color: 'pink' },
+      trader: { icon: '📊', name: 'TRADER', color: 'orange' },
+      monitor: { icon: '🔔', name: 'MONITOR', color: 'green' },
+      writer: { icon: '✍️', name: 'WRITER', color: 'cyan' },
+      oracle: { icon: '🎯', name: 'ORACLE', color: 'pink' }
+    };
+    
+    async function loadRegistry() {
+      try {
+        const res = await fetch('/factory-registry.json?' + Date.now());
+        const data = await res.json();
+        
+        // Update stats
+        document.getElementById('total-spawned').textContent = data.stats.totalSpawned;
+        document.getElementById('active-agents').textContent = data.stats.activeAgents;
+        document.getElementById('total-tasks').textContent = data.stats.tasksCompleted;
+        
+        // Render agents
+        const list = document.getElementById('agents-list');
+        if (data.agents.length === 0) {
+          list.innerHTML = '<div class="empty-state"><div class="icon">🏭</div><p>No agents spawned yet</p></div>';
+          return;
+        }
+        
+        list.innerHTML = data.agents.map(agent => {
+          const template = TEMPLATES[agent.type] || { icon: '🤖', name: agent.type.toUpperCase(), color: 'orange' };
+          const statusDot = agent.status === 'running' ? '' : ' completed';
+          const runtime = agent.runtime ? ` (${agent.runtime})` : '';
+          const spawned = new Date(agent.spawned).toLocaleString();
+          
+          return `
+            <div class="agent-card">
+              <div class="agent-header">
+                <span class="agent-id">${agent.id}</span>
+                <span class="agent-type ${agent.type}">${template.icon} ${template.name}</span>
+              </div>
+              <p class="agent-task">${agent.task}</p>
+              <div class="agent-meta">
+                <span><span class="status-dot${statusDot}"></span> ${agent.status}${runtime}</span>
+                <span>spawned: ${spawned}</span>
+                <span>parent: ${agent.parent}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+      } catch (e) {
+        console.error('Failed to load registry:', e);
+      }
+    }
+    
+    loadRegistry();
+    // Refresh every 30 seconds
+    setInterval(loadRegistry, 30000);
   </script>
 </body>
 </html>
