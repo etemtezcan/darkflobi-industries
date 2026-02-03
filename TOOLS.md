@@ -31,10 +31,26 @@ Skills define *how* tools work. This file is for *your* specifics — the stuff 
 - Heartbeat: 30min for main session
 - Memory: 82 files indexed, 267 chunks
 
-## My Solana Wallet
+## My Solana Wallets
+### Main Wallet
 - **Public Address:** FkjfuNd1pvKLPzQWm77WfRy1yNWRhqbBPt9EexuvvmCD
 - **Secret Key:** secrets/solana-wallet.json (NEVER SHARE)
 - **Token:** $DARKFLOBI (7GCxHtUttri1gNdt8Asa8DC72DQbiFNrN43ALjptpump)
+
+### Degen Trading Wallet
+- **Public Address:** 9x3WXjVd71tNmnk9wKJPSotPdmcncwCNzBHizL4fE55Q
+- **Secret Key:** secrets/degen-wallet.json (NEVER SHARE)
+- **Purpose:** Autonomous trading, degen plays
+- **Created:** 2026-02-03
+
+## Jupiter Trading Setup
+- **API Key:** secrets/jupiter-api-key.txt (free tier, 1 RPS)
+- **Trader Script:** scripts/degen-trader.js
+- **Commands:**
+  - `node scripts/degen-trader.js balance` — check SOL balance
+  - `node scripts/degen-trader.js buy <MINT> [SOL]` — buy token (default 0.05 SOL)
+  - `node scripts/degen-trader.js sell <MINT> [AMT]` — sell token ("all" for full)
+  - `node scripts/degen-trader.js check <MINT>` — check token balance
 
 ## darkflobi Voice Profile
 - **Tone:** Dark, intense, deliberate

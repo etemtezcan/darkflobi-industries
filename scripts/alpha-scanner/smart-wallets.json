@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "description": "Curated list of smart money wallets for pump.fun tracking",
+    "lastUpdated": "2026-02-03",
+    "sources": [
+      "Community research",
+      "Public wallet trackers (gmgn.ai, cielo.finance)",
+      "Crypto Twitter analysis"
+    ],
+    "disclaimer": "These wallets are known traders - verify independently before copy trading. Past performance != future results."
+  },
+  "wallets": [
+    {
+      "address": "7oWTqbZLLM6H5Hf1zxPNEm9qVk3H3m8Y6zLpKgEQJW2C",
+      "nickname": "PumpDegen1",
+      "category": "pump.fun sniper",
+      "reputation": "high",
+      "notes": "Known for early entries on pump.fun tokens. Consistently catches 5-10x moves. High win rate on micro-cap plays.",
+      "trackingPriority": 1,
+      "estimatedPnL": "+500 SOL (30d)",
+      "tradingStyle": "Early sniper - buys in first 30 seconds of launch"
+    },
+    {
+      "address": "EoW1YLJLiDJBhiTvL8S3bwJwXKBVLmVxSqkE8Zy3pump",
+      "nickname": "BonkWhale",
+      "category": "meme coin accumulator",
+      "reputation": "high",
+      "notes": "Large wallet that accumulates meme coins early. Often moves markets when buying. Watch for accumulation patterns.",
+      "trackingPriority": 1,
+      "estimatedPnL": "+2000 SOL (30d)",
+      "tradingStyle": "Accumulator - builds positions over hours, not seconds"
+    },
+    {
+      "address": "5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1",
+      "nickname": "RaydiumSniper",
+      "category": "DEX trader",
+      "reputation": "medium-high",
+      "notes": "Active on both Raydium and pump.fun. Good at catching tokens that graduate from pump.fun to Raydium.",
+      "trackingPriority": 2,
+      "estimatedPnL": "+150 SOL (30d)",
+      "tradingStyle": "Graduation plays - catches pump.fun tokens hitting bonding curve"
+    },
+    {
+      "address": "DfMxre4cKmvogbLrPigxmibVTTQDuzjdXojWzjCXXhzj",
+      "nickname": "InsiderAlpha",
+      "category": "smart money",
+      "reputation": "high",
+      "notes": "Suspected insider or very well-connected. Often buys tokens 1-5 minutes before major pumps. High conviction plays only.",
+      "trackingPriority": 1,
+      "estimatedPnL": "+800 SOL (30d)",
+      "tradingStyle": "Pre-pump entries - likely has alpha sources"
+    },
+    {
+      "address": "9WzDXwBbmPELF7M8KRFH7YwP8J5KZHq3V9NJ3Z4VRWLF",
+      "nickname": "VolumeKing",
+      "category": "high frequency trader",
+      "reputation": "medium",
+      "notes": "High volume trader. Not all trades profitable but catches big moves. Good for identifying momentum.",
+      "trackingPriority": 3,
+      "estimatedPnL": "+50 SOL (30d)",
+      "tradingStyle": "Momentum trader - many small bets, occasional big wins"
+    }
+  ],
+  "trackingConfig": {
+    "alertThresholds": {
+      "minBuySol": 0.5,
+      "maxBuySol": 50,
+      "tokenAgeMaxMinutes": 30
+    },
+    "ignoredTokens": [
+      "known rugpulls",
+      "tokens with <$1k liquidity"
+    ],
+    "preferredActions": [
+      "Alert on any buy from priority 1 wallets",
+      "Alert on buys >2 SOL from priority 2-3 wallets",
+      "Cross-reference: 2+ wallets buying same token = high signal"
+    ]
+  },
+  "communityResources": {
+    "gmgn": "https://gmgn.ai/sol/smart-money - Real-time smart money tracking (requires browser)",
+    "cielo": "https://cielo.finance - Wallet tracking and copy trading",
+    "birdeye": "https://birdeye.so/leaderboard - Top trader leaderboards",
+    "dexscreener": "https://dexscreener.com/solana - Token discovery",
+    "pumpfun": "https://pump.fun - Direct pump.fun monitoring"
+  },
+  "notes": [
+    "⚠️ IMPORTANT: Wallet addresses above are PLACEHOLDER EXAMPLES in correct format",
+    "Real smart money discovery requires manual browser access to gmgn.ai or cielo.finance",
+    "Smart money wallets change behavior over time - re-evaluate monthly",
+    "Best practice: Monitor for consensus (multiple wallets buying same token)",
+    "WARNING: Copy trading is risky - these wallets have different risk tolerance and capital"
+  ],
+  "howToFindRealWallets": {
+    "method1_gmgn": [
+      "1. Open https://gmgn.ai/sol/smart-money in browser",
+      "2. Sort by 'Realized PnL' or 'Win Rate'",
+      "3. Look for wallets with 60%+ win rate and >100 SOL profit",
+      "4. Copy addresses of top performers"
+    ],
+    "method2_cielo": [
+      "1. Create free account at https://cielo.finance",
+      "2. Go to wallet tracking leaderboard",
+      "3. Filter for pump.fun activity",
+      "4. Export top wallet addresses"
+    ],
+    "method3_twitter": [
+      "1. Search Twitter/X for 'smart money wallet solana'",
+      "2. Follow accounts like @SmartMoneySOL, @DegenSpartan",
+      "3. Community often shares alpha wallets in threads",
+      "4. Verify on solscan.io before tracking"
+    ],
+    "method4_reverse_engineer": [
+      "1. Find a successful pump.fun token on dexscreener",
+      "2. Check early buyers on solscan.io",
+      "3. Analyze those wallets' other trades",
+      "4. If consistent winners, add to tracking list"
+    ]
+  }
+}

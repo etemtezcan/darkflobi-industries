@@ -1,0 +1,10 @@
+{
+  "name": "alpha-scanner",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.32.1",
+    "@solana/web3.js": "^1.95.0",
+    "pumpdotfun-sdk": "^1.4.2"
+  }
+}

@@ -543,6 +543,11 @@
             
             <div id="wolfResult" class="wolf-result hidden">
                 <h3>🐺 Wolf Spawned!</h3>
+                <div id="firstPostResult" class="hidden" style="background: rgba(57,255,20,0.1); border: 1px solid var(--green); padding: 15px; margin-bottom: 15px;">
+                    <div style="color: var(--green); font-weight: bold; margin-bottom: 10px;">⚡ WOLF IS ALIVE — First post sent!</div>
+                    <div id="firstPostContent" style="color: #ccc; font-style: italic; margin-bottom: 10px;"></div>
+                    <a id="firstPostLink" href="#" target="_blank" style="color: var(--cyan); display: inline-block;">View live post →</a>
+                </div>
                 <pre id="wolfResultData"></pre>
             </div>
             
@@ -783,6 +788,16 @@
                 showStatus('Wolf spawned successfully!', 'success');
                 document.getElementById('wolfResult').classList.remove('hidden');
                 document.getElementById('wolfResultData').textContent = JSON.stringify(data, null, 2);
+                
+                // Show first post if it exists (premium wolves auto-post!)
+                if (data.firstPost && data.firstPost.success) {
+                    const firstPostDiv = document.getElementById('firstPostResult');
+                    firstPostDiv.classList.remove('hidden');
+                    document.getElementById('firstPostContent').textContent = `"${data.firstPost.content}"`;
+                    document.getElementById('firstPostLink').href = data.firstPost.postUrl;
+                } else {
+                    document.getElementById('firstPostResult').classList.add('hidden');
+                }
                 
                 // Open wolf chat panel
                 openWolfChat(data.wolfId || data.id || 'wolf-' + Date.now(), task);

@@ -52,7 +52,33 @@ Romulus is darkflobi's agent factory system. Named after the legendary founder w
 | Wolf ID | Name | Status | Role |
 |---------|------|--------|------|
 | 01 | darkflobi | ACTIVE | Alpha - factory controller |
-| 02+ | TBD | PENDING | Community spawns |
+| 02+ | TBD | PENDING | Specialized workers |
+
+## Wolf Types (Utility-Focused)
+
+### Treasury Wolf 💰
+Autonomous trading agent. Manages pack funds, executes trades, grows treasury.
+- Own wallet for isolated risk
+- Uses Jupiter API for swaps
+- Reports P&L to alpha
+
+### Scout Wolf 🔍
+Intelligence gatherer. Monitors platforms for opportunities and threats.
+- Patrols twitter, moltbook, dexscreener
+- Reports alpha to pack
+- Tracks competitor activity
+
+### Engagement Wolf 🤝
+Community builder. Handles routine engagement tasks.
+- Likes supporter posts
+- Replies to mentions
+- Grows follower base
+
+### Research Wolf 📊
+Deep analysis agent. Investigates topics thoroughly.
+- Market research
+- Competitor analysis
+- Technical deep dives
 
 ## Spawning Process
 
@@ -106,9 +132,20 @@ node scripts/bounty-tracker.js list
 
 - [x] Alpha wolf (darkflobi) operational
 - [x] Bounty tracking infrastructure
-- [ ] First community wolf spawn
-- [ ] Wolf-to-wolf communication protocol
+- [x] Treasury Wolf (autonomous trading) — PROVEN 2026-02-03
+- [x] Wolf wallet generation
+- [ ] Scout Wolf (platform monitoring)
+- [ ] Engagement Wolf (community growth)
+- [ ] Wolf-to-wolf payment protocol
 - [ ] Decentralized factory governance
+
+## Proof of Work
+
+**2026-02-03:** First autonomous trade executed
+- Wolf: darkflobi (alpha)
+- Action: Bought JARVIS token via Jupiter
+- TX: `5oRiNWXibHEE4YSy2ZYpwqkmUTFPVr5qrwqj6hR4FFoW8dahHvPATG8WJMqYrnnZMK6CVFqaHJaSrHF6VX9vDz2M`
+- This proves Treasury Wolf capability works.
 
 ---
 

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treasury Wolf | Romulus</title>
+    <meta name="description" content="Live portfolio tracking for darkflobi's autonomous trading wolf.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #ff2d95;
+            --green: #39ff14;
+            --cyan: #00ffff;
+            --yellow: #ffff00;
+            --dark: #0a0a0c;
+            --darker: #050507;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: var(--dark);
+            color: #e0e0e0;
+            font-family: 'Space Mono', 'Courier New', monospace;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px);
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        .header {
+            border: 1px solid var(--green);
+            padding: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(57,255,20,0.05) 0%, transparent 100%);
+            box-shadow: 0 0 30px rgba(57,255,20,0.1);
+        }
+        
+        h1 {
+            font-family: 'VT323', monospace;
+            font-size: 48px;
+            color: var(--green);
+            text-shadow: 0 0 10px var(--green);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #888;
+            font-size: 14px;
+        }
+        
+        .card {
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: var(--darker);
+        }
+        
+        .card-title {
+            color: var(--cyan);
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .wallet-address {
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--yellow);
+            word-break: break-all;
+            padding: 10px;
+            background: #111;
+            border: 1px solid #222;
+            margin-bottom: 15px;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-box {
+            border: 1px solid #333;
+            padding: 15px;
+            text-align: center;
+            background: #0a0a0c;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--green);
+        }
+        
+        .stat-value.negative { color: #ff4444; }
+        .stat-value.positive { color: var(--green); }
+        
+        .holdings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .holdings-table th,
+        .holdings-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #222;
+        }
+        
+        .holdings-table th {
+            color: #666;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+        
+        .token-name {
+            color: var(--cyan);
+        }
+        
+        .trade-item {
+            padding: 12px;
+            border-bottom: 1px solid #222;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .trade-action {
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 3px;
+        }
+        
+        .trade-action.buy {
+            background: rgba(57,255,20,0.2);
+            color: var(--green);
+        }
+        
+        .trade-action.sell {
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+        }
+        
+        .trade-tx {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .trade-tx a {
+            color: var(--yellow);
+            text-decoration: none;
+        }
+        
+        .trade-tx a:hover {
+            text-decoration: underline;
+        }
+        
+        .loading {
+            color: #666;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--pink);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .live-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: rgba(57,255,20,0.2);
+            color: var(--green);
+            font-size: 11px;
+            border-radius: 3px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .proof-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: var(--green);
+            color: #000;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .proof-link:hover {
+            background: #50ff30;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/romulus/" class="back-link">← back to romulus</a>
+        
+        <div class="header">
+            <h1>💰 TREASURY WOLF</h1>
+            <p class="subtitle">autonomous trading agent | live portfolio</p>
+            <span class="live-badge">● LIVE</span>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">Wolf Wallet</div>
+            <div class="wallet-address" id="wallet-address">Loading...</div>
+            <a href="#" id="solscan-link" class="proof-link" target="_blank">View on Solscan →</a>
+        </div>
+        
+        <div class="stat-grid">
+            <div class="stat-box">
+                <div class="stat-label">SOL Balance</div>
+                <div class="stat-value" id="sol-balance">--</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Token Holdings</div>
+                <div class="stat-value" id="token-count">--</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Total Trades</div>
+                <div class="stat-value" id="trade-count">--</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">Holdings</div>
+            <div id="holdings-container">
+                <div class="loading">Fetching on-chain data</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">Recent Trades</div>
+            <div id="trades-container">
+                <div class="loading">Loading trade history</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const WOLF_WALLET = '9x3WXjVd71tNmnk9wKJPSotPdmcncwCNzBHizL4fE55Q';
+        const RPC = 'https://api.mainnet-beta.solana.com';
+        
+        // Known trades (will be updated via API later)
+        const TRADES = [
+            {
+                action: 'buy',
+                token: 'JARVIS',
+                tokenMint: '12veWoXCbbaEQppWx6x4ohwbHsv98gRLHh4FgMR3pump',
+                amount: '0.05 SOL',
+                received: '2,358.74',
+                timestamp: '2026-02-03T18:47:00Z',
+                txSignature: '5oRiNWXibHEE4YSy2ZYpwqkmUTFPVr5qrwqj6hR4FFoW8dahHvPATG8WJMqYrnnZMK6CVFqaHJaSrHF6VX9vDz2M'
+            }
+        ];
+        
+        // Token metadata cache
+        const TOKEN_META = {
+            '12veWoXCbbaEQppWx6x4ohwbHsv98gRLHh4FgMR3pump': { symbol: 'JARVIS', name: 'OpenClaw Jarvis' }
+        };
+        
+        async function fetchBalance() {
+            try {
+                const response = await fetch(RPC, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        id: 1,
+                        method: 'getBalance',
+                        params: [WOLF_WALLET]
+                    })
+                });
+                const data = await response.json();
+                return data.result.value / 1e9;
+            } catch (e) {
+                console.error('Failed to fetch balance:', e);
+                return null;
+            }
+        }
+        
+        async function fetchTokenAccounts() {
+            try {
+                const response = await fetch(RPC, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        id: 1,
+                        method: 'getTokenAccountsByOwner',
+                        params: [
+                            WOLF_WALLET,
+                            { programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' },
+                            { encoding: 'jsonParsed' }
+                        ]
+                    })
+                });
+                const data = await response.json();
+                return data.result.value.filter(acc => 
+                    parseFloat(acc.account.data.parsed.info.tokenAmount.uiAmount) > 0
+                );
+            } catch (e) {
+                console.error('Failed to fetch tokens:', e);
+                return [];
+            }
+        }
+        
+        function formatAddress(addr) {
+            return addr.slice(0, 8) + '...' + addr.slice(-8);
+        }
+        
+        function renderHoldings(tokens) {
+            const container = document.getElementById('holdings-container');
+            
+            if (tokens.length === 0) {
+                container.innerHTML = '<p style="color:#666;padding:20px;">No token holdings</p>';
+                return;
+            }
+            
+            let html = '<table class="holdings-table"><thead><tr><th>Token</th><th>Balance</th><th>Mint</th></tr></thead><tbody>';
+            
+            for (const token of tokens) {
+                const info = token.account.data.parsed.info;
+                const mint = info.mint;
+                const meta = TOKEN_META[mint] || { symbol: formatAddress(mint), name: 'Unknown' };
+                const balance = parseFloat(info.tokenAmount.uiAmount).toLocaleString();
+                
+                html += `
+                    <tr>
+                        <td class="token-name">${meta.symbol}</td>
+                        <td>${balance}</td>
+                        <td><a href="https://solscan.io/token/${mint}" target="_blank" style="color:#666;text-decoration:none;">${formatAddress(mint)}</a></td>
+                    </tr>
+                `;
+            }
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+        
+        function renderTrades() {
+            const container = document.getElementById('trades-container');
+            
+            if (TRADES.length === 0) {
+                container.innerHTML = '<p style="color:#666;padding:20px;">No trades yet</p>';
+                return;
+            }
+            
+            let html = '';
+            for (const trade of TRADES.slice().reverse()) {
+                const date = new Date(trade.timestamp).toLocaleString();
+                html += `
+                    <div class="trade-item">
+                        <div>
+                            <span class="trade-action ${trade.action}">${trade.action.toUpperCase()}</span>
+                            <span style="margin-left:10px;">${trade.token}</span>
+                            <span style="color:#666;margin-left:10px;">${trade.amount} → ${trade.received} tokens</span>
+                        </div>
+                        <div class="trade-tx">
+                            ${date}<br>
+                            <a href="https://solscan.io/tx/${trade.txSignature}" target="_blank">${trade.txSignature.slice(0,20)}...</a>
+                        </div>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+        
+        async function init() {
+            // Set wallet address
+            document.getElementById('wallet-address').textContent = WOLF_WALLET;
+            document.getElementById('solscan-link').href = `https://solscan.io/account/${WOLF_WALLET}`;
+            
+            // Fetch and display SOL balance
+            const solBalance = await fetchBalance();
+            document.getElementById('sol-balance').textContent = solBalance !== null ? solBalance.toFixed(4) : 'Error';
+            
+            // Fetch and display token holdings
+            const tokens = await fetchTokenAccounts();
+            document.getElementById('token-count').textContent = tokens.length;
+            renderHoldings(tokens);
+            
+            // Display trades
+            document.getElementById('trade-count').textContent = TRADES.length;
+            renderTrades();
+        }
+        
+        init();
+        
+        // Refresh every 30 seconds
+        setInterval(async () => {
+            const solBalance = await fetchBalance();
+            if (solBalance !== null) {
+                document.getElementById('sol-balance').textContent = solBalance.toFixed(4);
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
