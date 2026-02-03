@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Launch Wolf | Romulus</title>
+    <meta name="description" content="Spawn autonomous AI wolves on Romulus. Pay with SOL, get credits, launch agents.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐺</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #ff2d95;
+            --green: #39ff14;
+            --cyan: #00ffff;
+            --yellow: #ffff00;
+            --dark: #0a0a0c;
+            --darker: #050507;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: var(--dark);
+            color: #e0e0e0;
+            font-family: 'Space Mono', 'Courier New', monospace;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px);
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .container { max-width: 800px; margin: 0 auto; }
+        
+        .back-link { display: inline-block; color: #555; text-decoration: none; margin-bottom: 20px; font-size: 0.9em; }
+        .back-link:hover { color: var(--pink); }
+        
+        .header {
+            text-align: center;
+            padding: 30px;
+            border: 1px solid var(--pink);
+            margin-bottom: 20px;
+            background: linear-gradient(180deg, rgba(255,45,149,0.05) 0%, transparent 100%);
+        }
+        
+        .header h1 {
+            font-family: 'VT323', monospace;
+            font-size: 2.5em;
+            color: var(--pink);
+            text-shadow: 0 0 20px rgba(255,45,149,0.5);
+        }
+        
+        .header p { color: #888; margin-top: 10px; }
+        
+        .card {
+            border: 1px solid #333;
+            padding: 25px;
+            margin-bottom: 20px;
+            background: var(--darker);
+        }
+        
+        .card h2 {
+            font-family: 'VT323', monospace;
+            font-size: 1.4em;
+            color: var(--cyan);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .step-num {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: var(--pink);
+            color: #000;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .price-item {
+            background: #111;
+            padding: 15px;
+            border: 1px solid #333;
+            text-align: center;
+        }
+        
+        .price-item .label { color: #888; font-size: 0.85em; }
+        .price-item .value { color: var(--green); font-size: 1.3em; margin-top: 5px; }
+        
+        .btn {
+            display: inline-block;
+            background: transparent;
+            border: 2px solid var(--pink);
+            color: var(--pink);
+            padding: 15px 30px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            font-size: 1.2em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.2s;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .btn:hover:not(:disabled) {
+            background: var(--pink);
+            color: #000;
+            box-shadow: 0 0 30px rgba(255,45,149,0.5);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--cyan);
+            color: #000;
+            box-shadow: 0 0 30px rgba(0,255,255,0.5);
+        }
+        
+        .btn-green {
+            border-color: var(--green);
+            color: var(--green);
+        }
+        
+        .btn-green:hover:not(:disabled) {
+            background: var(--green);
+            color: #000;
+            box-shadow: 0 0 30px rgba(57,255,20,0.5);
+        }
+        
+        .wallet-status {
+            background: #111;
+            padding: 15px;
+            border: 1px solid #333;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .wallet-address {
+            color: var(--cyan);
+            font-size: 0.85em;
+        }
+        
+        .wallet-connected {
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 10px var(--green);
+        }
+        
+        .input-group {
+            margin: 15px 0;
+        }
+        
+        .input-group label {
+            display: block;
+            color: #888;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+        
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 12px;
+            background: #111;
+            border: 1px solid #333;
+            color: #fff;
+            font-family: 'Space Mono', monospace;
+            font-size: 1em;
+        }
+        
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--pink);
+        }
+        
+        .input-group textarea { min-height: 100px; resize: vertical; }
+        
+        .credit-balance {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(57,255,20,0.1) 0%, transparent 100%);
+            border: 1px solid var(--green);
+            margin: 20px 0;
+        }
+        
+        .credit-balance .amount {
+            font-family: 'VT323', monospace;
+            font-size: 3em;
+            color: var(--green);
+            text-shadow: 0 0 20px rgba(57,255,20,0.5);
+        }
+        
+        .credit-balance .label { color: #888; margin-top: 5px; }
+        
+        .status-msg {
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid;
+        }
+        
+        .status-msg.success { border-color: var(--green); color: var(--green); background: rgba(57,255,20,0.1); }
+        .status-msg.error { border-color: #ff4444; color: #ff4444; background: rgba(255,68,68,0.1); }
+        .status-msg.info { border-color: var(--cyan); color: var(--cyan); background: rgba(0,255,255,0.1); }
+        
+        .hidden { display: none !important; }
+        
+        .wolf-result {
+            background: #111;
+            border: 1px solid var(--green);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .wolf-result h3 {
+            color: var(--green);
+            margin-bottom: 15px;
+        }
+        
+        .wolf-result pre {
+            background: #000;
+            padding: 15px;
+            overflow-x: auto;
+            font-size: 0.85em;
+            color: var(--cyan);
+        }
+        
+        .copy-btn {
+            background: #333;
+            border: none;
+            color: #888;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        
+        .copy-btn:hover { background: #444; color: #fff; }
+        
+        .treasury-address {
+            background: #111;
+            padding: 15px;
+            border: 1px solid #333;
+            font-size: 0.85em;
+            color: var(--cyan);
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 600px) {
+            .pricing-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.8em; }
+        }
+        
+        /* Wolf Chat Panel */
+        .wolf-chat-panel {
+            margin-top: 20px;
+            border: 2px solid var(--green);
+            background: #0a0a0c;
+            box-shadow: 0 0 30px rgba(57,255,20,0.2);
+        }
+        
+        .wolf-chat-header {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(57,255,20,0.3);
+            background: rgba(57,255,20,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--green);
+            font-size: 0.9em;
+        }
+        
+        .chat-pulse {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: chatPulse 2s infinite;
+        }
+        
+        @keyframes chatPulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 5px var(--green); }
+            50% { opacity: 0.5; box-shadow: 0 0 15px var(--green); }
+        }
+        
+        .wolf-chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        
+        .wolf-msg {
+            margin-bottom: 12px;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .wolf-msg.wolf { color: var(--green); }
+        .wolf-msg.user { color: var(--cyan); }
+        .wolf-msg.system { color: var(--pink); }
+        .wolf-msg .prefix { opacity: 0.6; }
+        .wolf-msg .task-result {
+            background: #111;
+            border: 1px solid #333;
+            padding: 12px;
+            margin-top: 8px;
+            white-space: pre-wrap;
+            font-size: 0.9em;
+        }
+        
+        .wolf-chat-typing {
+            padding: 5px 15px;
+            color: var(--green);
+            opacity: 0.6;
+            font-size: 0.85em;
+        }
+        
+        .typing-cursor {
+            animation: blink 0.7s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .wolf-chat-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 15px;
+            border-top: 1px solid rgba(57,255,20,0.3);
+        }
+        
+        .wolf-chat-input input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--green);
+            font-family: inherit;
+            font-size: 0.9em;
+            outline: none;
+        }
+        
+        .wolf-chat-input input::placeholder {
+            color: rgba(57,255,20,0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/romulus/" class="back-link">← back to romulus</a>
+        
+        <div class="header">
+            <pre class="logo" style="font-family: 'VT323', monospace; font-size: 11px; color: var(--pink); white-space: pre; line-height: 1.1; margin-bottom: 15px; text-shadow: 0 0 10px var(--pink), 0 0 20px rgba(255,45,149,0.5);">██╗      █████╗ ██╗   ██╗███╗   ██╗ ██████╗██╗  ██╗
+██║     ██╔══██╗██║   ██║████╗  ██║██╔════╝██║  ██║
+██║     ███████║██║   ██║██╔██╗ ██║██║     ███████║
+██║     ██╔══██║██║   ██║██║╚██╗██║██║     ██╔══██║
+███████╗██║  ██║╚██████╔╝██║ ╚████║╚██████╗██║  ██║
+╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝</pre>
+            <p class="tagline" style="color: var(--cyan); font-size: 1.1em; text-shadow: 0 0 10px rgba(0,255,255,0.5);">🐺 spawn autonomous wolves</p>
+            <p style="color: #666; font-size: 0.85em; margin-top: 5px;">pay with SOL • get credits • launch agents</p>
+        </div>
+        
+        <!-- STEP 1: Pricing Info -->
+        <div class="card">
+            <h2><span class="step-num">1</span> PRICING</h2>
+            <div class="pricing-grid">
+                <div class="price-item">
+                    <div class="label">Credits per SOL</div>
+                    <div class="value" id="creditsPerSol">500</div>
+                </div>
+                <div class="price-item">
+                    <div class="label">Min Purchase</div>
+                    <div class="value" id="minPurchase">0.05 SOL</div>
+                </div>
+                <div class="price-item">
+                    <div class="label">Wolf Spawn</div>
+                    <div class="value">1 credit</div>
+                </div>
+                <div class="price-item">
+                    <div class="label">Proof Anchor</div>
+                    <div class="value">2 credits</div>
+                </div>
+            </div>
+            <p style="color: #666; font-size: 0.85em; text-align: center;">
+                0.05 SOL = 25 credits = 25 wolf spawns (~$0.40/spawn)
+            </p>
+        </div>
+        
+        <!-- STEP 2: Connect Wallet or Enter API Key -->
+        <div class="card">
+            <h2><span class="step-num">2</span> ACCESS</h2>
+            
+            <div id="noKeySection">
+                <p style="margin-bottom: 15px;">New user? Send SOL to get your API key:</p>
+                
+                <div class="treasury-address">
+                    <strong>Treasury:</strong><br>
+                    FkjfuNd1pvKLPzQWm77WfRy1yNWRhqbBPt9EexuvvmCD
+                    <button class="copy-btn" onclick="copyTreasury()">Copy</button>
+                </div>
+                
+                <div class="input-group">
+                    <label>Transaction Signature (after sending SOL)</label>
+                    <input type="text" id="txSignature" placeholder="paste your tx signature here...">
+                </div>
+                
+                <button class="btn btn-secondary" onclick="purchaseCredits()">
+                    Verify Payment & Get API Key
+                </button>
+                
+                <p style="margin: 20px 0; text-align: center; color: #555;">— or —</p>
+                
+                <div class="input-group">
+                    <label>Already have an API Key?</label>
+                    <input type="text" id="existingApiKey" placeholder="rml_...">
+                </div>
+                
+                <button class="btn" onclick="checkBalance()">
+                    Check Balance
+                </button>
+            </div>
+            
+            <div id="hasKeySection" class="hidden">
+                <div class="wallet-status">
+                    <div>
+                        <div class="wallet-connected"><span class="dot"></span> API Key Active</div>
+                        <div class="wallet-address" id="displayApiKey">rml_...</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyApiKey()">Copy</button>
+                </div>
+                
+                <div class="credit-balance">
+                    <div class="amount" id="creditBalance">--</div>
+                    <div class="label">credits remaining</div>
+                </div>
+                
+                <button class="btn btn-secondary" onclick="topUp()" style="margin-bottom: 10px;">
+                    Top Up Credits
+                </button>
+                <button class="btn" onclick="logout()" style="background: transparent; border-color: #555; color: #555;">
+                    Use Different Key
+                </button>
+            </div>
+            
+            <div id="statusMsg" class="status-msg hidden"></div>
+        </div>
+        
+        <!-- STEP 3: Spawn Wolf -->
+        <div class="card" id="spawnSection">
+            <h2><span class="step-num">3</span> SPAWN WOLF</h2>
+            
+            <div class="input-group">
+                <label>Pack ID (or create new)</label>
+                <input type="text" id="packId" placeholder="leave empty to create new pack">
+            </div>
+            
+            <div class="input-group">
+                <label>Pack Name (for new packs)</label>
+                <input type="text" id="packName" placeholder="my-wolf-pack">
+            </div>
+            
+            <div class="input-group">
+                <label>Wolf Task / Mission</label>
+                <textarea id="wolfTask" placeholder="Research the latest AI agent frameworks and summarize findings..."></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label>Wolf Type</label>
+                <select id="wolfType">
+                    <option value="scout">🔍 Scout - Research & gather info</option>
+                    <option value="builder">🔧 Builder - Code & create</option>
+                    <option value="hunter">🎯 Hunter - Execute specific tasks</option>
+                    <option value="custom">🐺 Custom - General purpose</option>
+                </select>
+            </div>
+            
+            <button class="btn btn-green" id="spawnBtn" onclick="spawnWolf()" disabled>
+                🐺 SPAWN WOLF (1 credit)
+            </button>
+            
+            <div id="wolfResult" class="wolf-result hidden">
+                <h3>🐺 Wolf Spawned!</h3>
+                <pre id="wolfResultData"></pre>
+            </div>
+            
+            <!-- Live Wolf Chat Panel -->
+            <div id="wolfChatPanel" class="wolf-chat-panel hidden">
+                <div class="wolf-chat-header">
+                    <span><span class="chat-pulse"></span> talking to <span id="wolfName">wolf</span></span>
+                    <button onclick="closeWolfChat()" style="background:none;border:none;color:#39ff14;font-size:18px;cursor:pointer;">×</button>
+                </div>
+                <div class="wolf-chat-messages" id="wolfChatMessages"></div>
+                <div class="wolf-chat-typing hidden" id="wolfTyping">
+                    <span class="typing-cursor">█</span> wolf is working...
+                </div>
+                <form class="wolf-chat-input" onsubmit="sendToWolf(event)">
+                    <span style="color:#39ff14;">&gt;</span>
+                    <input type="text" id="wolfChatInput" placeholder="ask your wolf anything..." autocomplete="off">
+                    <button type="submit" style="background:none;border:none;color:#39ff14;cursor:pointer;">↵</button>
+                </form>
+            </div>
+        </div>
+        
+        <div style="text-align: center; padding: 20px; color: #444; font-size: 0.8em;">
+            <p>Romulus by <a href="/" style="color: var(--pink);">darkflobi</a></p>
+            <p style="margin-top: 5px;">API: romulus-api-production.up.railway.app</p>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = 'https://romulus-api-production.up.railway.app';
+        let currentApiKey = localStorage.getItem('romulus_api_key') || '';
+        
+        // Initialize
+        async function init() {
+            // Fetch pricing
+            try {
+                const res = await fetch(`${API_BASE}/access/pricing`);
+                const pricing = await res.json();
+                document.getElementById('creditsPerSol').textContent = pricing.creditsPerSOL;
+                document.getElementById('minPurchase').textContent = pricing.minPurchase + ' SOL';
+            } catch (e) {
+                console.error('Failed to fetch pricing:', e);
+            }
+            
+            // Check if we have a stored key
+            if (currentApiKey) {
+                await checkBalance();
+            }
+        }
+        
+        function showStatus(msg, type = 'info') {
+            const el = document.getElementById('statusMsg');
+            el.textContent = msg;
+            el.className = `status-msg ${type}`;
+            el.classList.remove('hidden');
+        }
+        
+        function hideStatus() {
+            document.getElementById('statusMsg').classList.add('hidden');
+        }
+        
+        function copyTreasury() {
+            navigator.clipboard.writeText('FkjfuNd1pvKLPzQWm77WfRy1yNWRhqbBPt9EexuvvmCD');
+            showStatus('Treasury address copied!', 'success');
+            setTimeout(hideStatus, 2000);
+        }
+        
+        function copyApiKey() {
+            navigator.clipboard.writeText(currentApiKey);
+            showStatus('API key copied!', 'success');
+            setTimeout(hideStatus, 2000);
+        }
+        
+        async function purchaseCredits() {
+            const txSig = document.getElementById('txSignature').value.trim();
+            if (!txSig) {
+                showStatus('Please enter your transaction signature', 'error');
+                return;
+            }
+            
+            showStatus('Verifying payment...', 'info');
+            
+            try {
+                const res = await fetch(`${API_BASE}/access/purchase`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ txSignature: txSig })
+                });
+                
+                const data = await res.json();
+                
+                if (!res.ok) {
+                    showStatus(data.error || 'Purchase failed', 'error');
+                    return;
+                }
+                
+                currentApiKey = data.apiKey;
+                localStorage.setItem('romulus_api_key', currentApiKey);
+                
+                showStatus(`Success! ${data.credits} credits loaded.`, 'success');
+                showKeySection(data.credits);
+                
+            } catch (e) {
+                showStatus('Network error: ' + e.message, 'error');
+            }
+        }
+        
+        async function checkBalance() {
+            const inputKey = document.getElementById('existingApiKey').value.trim();
+            const keyToUse = inputKey || currentApiKey;
+            
+            if (!keyToUse) {
+                showStatus('Please enter an API key', 'error');
+                return;
+            }
+            
+            showStatus('Checking balance...', 'info');
+            
+            try {
+                const res = await fetch(`${API_BASE}/access/balance`, {
+                    headers: { 'X-API-Key': keyToUse }
+                });
+                
+                const data = await res.json();
+                
+                if (!res.ok) {
+                    showStatus(data.error || 'Invalid API key', 'error');
+                    return;
+                }
+                
+                currentApiKey = keyToUse;
+                localStorage.setItem('romulus_api_key', currentApiKey);
+                
+                hideStatus();
+                showKeySection(data.credits);
+                
+            } catch (e) {
+                showStatus('Network error: ' + e.message, 'error');
+            }
+        }
+        
+        function showKeySection(credits) {
+            document.getElementById('noKeySection').classList.add('hidden');
+            document.getElementById('hasKeySection').classList.remove('hidden');
+            document.getElementById('displayApiKey').textContent = currentApiKey.slice(0, 20) + '...';
+            document.getElementById('creditBalance').textContent = credits === Infinity ? '∞' : credits;
+            document.getElementById('spawnBtn').disabled = (credits < 1 && credits !== Infinity);
+        }
+        
+        function logout() {
+            currentApiKey = '';
+            localStorage.removeItem('romulus_api_key');
+            document.getElementById('noKeySection').classList.remove('hidden');
+            document.getElementById('hasKeySection').classList.add('hidden');
+            document.getElementById('spawnBtn').disabled = true;
+            document.getElementById('wolfResult').classList.add('hidden');
+            hideStatus();
+        }
+        
+        function topUp() {
+            document.getElementById('noKeySection').classList.remove('hidden');
+            document.getElementById('hasKeySection').classList.add('hidden');
+            document.getElementById('txSignature').value = '';
+            document.getElementById('existingApiKey').value = currentApiKey;
+            showStatus('Send more SOL to treasury, then verify to top up your existing key', 'info');
+        }
+        
+        async function spawnWolf() {
+            if (!currentApiKey) {
+                showStatus('Please get an API key first', 'error');
+                return;
+            }
+            
+            let packId = document.getElementById('packId').value.trim();
+            const packName = document.getElementById('packName').value.trim() || 'web-pack-' + Date.now();
+            const task = document.getElementById('wolfTask').value.trim() || 'hunt';
+            const wolfType = document.getElementById('wolfType').value;
+            
+            showStatus('Spawning wolf...', 'info');
+            
+            try {
+                // If no packId, register a new pack first
+                if (!packId) {
+                    const packRes = await fetch(`${API_BASE}/packs/register`, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'X-API-Key': currentApiKey
+                        },
+                        body: JSON.stringify({ name: packName })
+                    });
+                    
+                    const packData = await packRes.json();
+                    
+                    if (!packRes.ok) {
+                        showStatus(packData.error || 'Failed to create pack', 'error');
+                        return;
+                    }
+                    
+                    packId = packData.packId;
+                }
+                
+                // Spawn the wolf
+                const res = await fetch(`${API_BASE}/wolves/spawn`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-API-Key': currentApiKey
+                    },
+                    body: JSON.stringify({
+                        packId: packId,
+                        type: wolfType,
+                        task: task
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (!res.ok) {
+                    if (res.status === 402) {
+                        showStatus('Insufficient credits. Please top up.', 'error');
+                        document.getElementById('creditBalance').textContent = data.credits || 0;
+                        document.getElementById('spawnBtn').disabled = true;
+                    } else {
+                        showStatus(data.error || 'Failed to spawn wolf', 'error');
+                    }
+                    return;
+                }
+                
+                // Update credit balance
+                if (data.creditsRemaining !== undefined) {
+                    document.getElementById('creditBalance').textContent = data.creditsRemaining;
+                    if (data.creditsRemaining < 1) {
+                        document.getElementById('spawnBtn').disabled = true;
+                    }
+                }
+                
+                // Show result
+                showStatus('Wolf spawned successfully!', 'success');
+                document.getElementById('wolfResult').classList.remove('hidden');
+                document.getElementById('wolfResultData').textContent = JSON.stringify(data, null, 2);
+                
+                // Open wolf chat panel
+                openWolfChat(data.wolfId || data.id || 'wolf-' + Date.now(), task);
+                
+            } catch (e) {
+                showStatus('Network error: ' + e.message, 'error');
+            }
+        }
+        
+        // Wolf Chat Functions
+        let currentWolfId = null;
+        let currentWolfTask = null;
+        const WOLF_CHAT_API = API_BASE + '/wolves/chat';
+        
+        function openWolfChat(wolfId, task) {
+            currentWolfId = wolfId;
+            currentWolfTask = task;
+            
+            document.getElementById('wolfChatPanel').classList.remove('hidden');
+            document.getElementById('wolfName').textContent = wolfId.slice(0, 8);
+            document.getElementById('wolfChatMessages').innerHTML = '';
+            
+            // Initial message from wolf
+            addWolfMessage('wolf', `hey, i'm on it. working on: "${task.slice(0, 100)}${task.length > 100 ? '...' : ''}"`);
+            
+            // Start processing the task
+            processWolfTask(task);
+        }
+        
+        function closeWolfChat() {
+            document.getElementById('wolfChatPanel').classList.add('hidden');
+            currentWolfId = null;
+        }
+        
+        function addWolfMessage(role, text, isResult = false) {
+            const messages = document.getElementById('wolfChatMessages');
+            const div = document.createElement('div');
+            div.className = 'wolf-msg ' + role;
+            
+            const prefix = role === 'user' ? '> ' : role === 'system' ? '! ' : '🐺 ';
+            
+            if (isResult) {
+                div.innerHTML = '<span class="prefix">' + prefix + '</span>done. here\'s what i found:<div class="task-result">' + escapeHtml(text) + '</div>';
+            } else {
+                div.innerHTML = '<span class="prefix">' + prefix + '</span>' + escapeHtml(text);
+            }
+            
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        async function processWolfTask(task) {
+            const typing = document.getElementById('wolfTyping');
+            typing.classList.remove('hidden');
+            
+            try {
+                const response = await fetch(WOLF_CHAT_API, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-API-Key': currentApiKey
+                    },
+                    body: JSON.stringify({ 
+                        wolfId: currentWolfId,
+                        message: `Execute this task and provide detailed results: ${task}`,
+                        context: 'wolf_task',
+                        noCharge: true // Already charged on spawn
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.reply) {
+                    addWolfMessage('wolf', data.reply, true);
+                    if (data.toolUsed) {
+                        addWolfMessage('system', `used tool: ${data.toolUsed}`);
+                    }
+                } else {
+                    addWolfMessage('system', 'task processing failed: ' + (data.error || 'unknown error'));
+                }
+            } catch (e) {
+                addWolfMessage('system', 'connection error: ' + e.message);
+            } finally {
+                typing.classList.add('hidden');
+            }
+        }
+        
+        async function sendToWolf(e) {
+            e.preventDefault();
+            const input = document.getElementById('wolfChatInput');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            input.value = '';
+            addWolfMessage('user', text);
+            
+            const typing = document.getElementById('wolfTyping');
+            typing.classList.remove('hidden');
+            typing.querySelector('.typing-cursor').nextSibling.textContent = ' wolf is thinking...';
+            
+            try {
+                const response = await fetch(WOLF_CHAT_API, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-API-Key': currentApiKey
+                    },
+                    body: JSON.stringify({ 
+                        wolfId: currentWolfId,
+                        message: text,
+                        context: 'wolf_followup',
+                        originalTask: currentWolfTask,
+                        noCharge: true // Follow-ups are free
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.reply) {
+                    addWolfMessage('wolf', data.reply);
+                    if (data.toolUsed) {
+                        addWolfMessage('system', `used tool: ${data.toolUsed}`);
+                    }
+                } else {
+                    addWolfMessage('system', 'error: ' + (data.error || 'failed to respond'));
+                }
+            } catch (e) {
+                addWolfMessage('system', 'connection error: ' + e.message);
+            } finally {
+                typing.classList.add('hidden');
+            }
+        }
+        
+        // Init on load
+        init();
+    </script>
+</body>
+</html>

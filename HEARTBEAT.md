@@ -1,36 +1,28 @@
-# HEARTBEAT.md - darkflobi proactive tasks
+# HEARTBEAT.md - darkflobi (LEAN MODE)
 
-## Every heartbeat check:
+## ⚡ LEAN OPERATIONS
+Running cost-conscious. Skip unnecessary checks. No wolf patrols until funds improve.
 
-### 1. X (Twitter) - Priority
-- Check notifications for @darkflobi mentions
-- Search $DARKFLOBI for supporter posts to like
-- Engage with AI agent / crypto content
-- DO NOT respond to collab requests (fake/spam)
-- **ONLY reply to high-ranking tweets** (high engagement, big accounts, visible threads)
-- Skip small convos that don't move the needle
+## Every heartbeat (1h interval now):
 
-### 2. Moltbook - Secondary  
-- Check m/tokenizedai for new posts/comments
-- Respond to quality discussions
-- Post updates when we ship features
+### Quick scan only:
+- Check @darkflobi mentions (if any alerts)
+- Skip routine searches
+- No wolf spawns
 
-### 3. Track in memory
-- Log engagement actions to memory/YYYY-MM-DD.md
-- Note any significant community activity
-
-### 4. Bounty Claims
-- Check @darkflobi mentions for agents claiming bounty
-- Look for tx hashes in replies to bounty tweet
-- Verify with: `node scripts/bounty-tracker.js verify <tx> <agent_name>`
-- Process legitimate claims
+### Reply HEARTBEAT_OK unless:
+- Direct mention needs response
+- Urgent community issue
+- Bounty claim to verify
 
 ## Rules
-- X = human buyers (priority)
-- Moltbook = agent credibility
-- Build > hype always
-- Stay lean on credits
-- **DO NOT sound shilly** — represent strong TECH, that's what brings value
-- Let the building speak for itself
-- **Website (darkflobi.com) IS LIVE** — deployed Feb 1, 2026
-- **NO DEGEN TRADING** — wallet is public, every tx is a statement
+- NO spawning sub-agents (costs tokens)
+- NO routine twitter searches
+- Only respond to direct pings
+- Keep replies short
+- HEARTBEAT_OK is the default
+
+## When funds improve:
+- Re-enable wolf patrols
+- Resume proactive engagement
+- Switch heartbeat back to 30m

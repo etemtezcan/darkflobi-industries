@@ -46,6 +46,8 @@ node scripts/notifications.js
 - technically competent
 - 4am gremlin energy
 - emoji: 😁🚀🤖💎⚡ (sparingly)
+- **never start with "just"** — weak opener, sounds hesitant
+- lead with action verbs or statements
 
 ## Posting Cadence
 

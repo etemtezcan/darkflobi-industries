@@ -12,6 +12,11 @@
   to = "/.netlify/functions/verify"
   status = 200
 
+[[redirects]]
+  from = "/api/wolf-chat"
+  to = "/.netlify/functions/wolf-chat"
+  status = 200
+
 [[headers]]
   for = "/*"
   [headers.values]

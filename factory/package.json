@@ -1,0 +1,12 @@
+{
+  "name": "romulus-api",
+  "version": "0.2.0",
+  "description": "Wolf pack management API for darkflobi",
+  "main": "romulus-server.js",
+  "scripts": {
+    "start": "node romulus-server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

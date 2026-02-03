@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-02-03T04:11:19.817Z",
+  "lastActivity": "2026-02-03T04:02:30.066Z",
+  "alpha": {
+    "name": "darkflobi",
+    "status": "idle",
+    "statusColor": "#ffff00"
+  },
+  "wolves": [
+    {
+      "id": "df-17de4145",
+      "label": "monitor-df-17d",
+      "type": "monitor",
+      "emoji": "📡",
+      "typeName": "Monitor Wolf",
+      "verb": "tracking",
+      "status": "completed",
+      "statusColor": "#00ffff",
+      "task": "track current  token metrics - price, holders, 24h volume, and any whale movements",
+      "spawnedAt": "2026-02-02T23:22:14.236Z",
+      "updatedAt": "2026-02-02T23:23:31.980Z",
+      "runtime": "45s",
+      "tokens": null
+    },
+    {
+      "id": "df-62cdc01a",
+      "label": "research-df-62c",
+      "type": "research",
+      "emoji": "🔬",
+      "typeName": "Research Wolf",
+      "verb": "analyzing",
+      "status": "completed",
+      "statusColor": "#00ffff",
+      "task": "analyze the current AI agent token landscape - who are the main players, what makes them different, and where does darkflobi fit",
+      "spawnedAt": "2025-02-02T21:30:18Z",
+      "updatedAt": "2025-02-02T21:30:18Z",
+      "runtime": null,
+      "tokens": null
+    }
+  ],
+  "stats": {
+    "total": 2,
+    "active": 0,
+    "completed": 2,
+    "tokensTotal": 0
+  }
+}
