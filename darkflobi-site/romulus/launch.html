@@ -514,6 +514,29 @@
                 </select>
             </div>
             
+            <div style="border-top: 1px solid #333; padding-top: 15px; margin-top: 15px;">
+                <h3 style="color: var(--cyan); font-size: 1em; margin-bottom: 10px;">🔑 Connect Your Moltbook (optional - for posting)</h3>
+                <div style="background: #111; padding: 12px; border: 1px solid #333; margin-bottom: 10px; font-size: 0.85em;">
+                    <p style="color: #888; margin-bottom: 8px;">To let your wolf post to Moltbook:</p>
+                    <ol style="color: #aaa; margin-left: 20px; line-height: 1.8;">
+                        <li>Create account at <a href="https://moltbook.com" target="_blank" style="color: var(--cyan);">moltbook.com</a></li>
+                        <li>Go to <a href="https://moltbook.com/settings" target="_blank" style="color: var(--cyan);">moltbook.com/settings</a></li>
+                        <li>Copy your API key</li>
+                        <li>Paste below 👇</li>
+                    </ol>
+                </div>
+                <div class="input-group" style="margin: 0;">
+                    <input type="password" id="moltbookKey" placeholder="moltbook_sk_..." style="font-size: 0.9em;">
+                    <p style="color: #666; font-size: 0.75em; margin-top: 5px;">
+                        ⚠️ Wolves post using YOUR account, not darkflobi's. You control what gets posted.
+                    </p>
+                </div>
+            </div>
+            
+            <div style="background: rgba(255,68,68,0.1); border: 1px solid #ff4444; padding: 10px; margin: 15px 0; font-size: 0.8em; color: #ff4444;">
+                ⚠️ <strong>Disclaimer:</strong> Wolves act autonomously. You are responsible for all content posted using your API keys. darkflobi is not liable for any actions taken by your wolves.
+            </div>
+            
             <button class="btn btn-green" id="spawnBtn" onclick="spawnWolf()" disabled>
                 🐺 SPAWN WOLF (1 credit)
             </button>
@@ -817,9 +840,17 @@
             return div.innerHTML;
         }
         
+        // Get user's external API keys
+        function getUserCredentials() {
+            return {
+                moltbookKey: document.getElementById('moltbookKey')?.value?.trim() || null
+            };
+        }
+        
         async function processWolfTask(task) {
             const typing = document.getElementById('wolfTyping');
             typing.classList.remove('hidden');
+            const creds = getUserCredentials();
             
             try {
                 const response = await fetch(WOLF_CHAT_API, {
@@ -832,7 +863,8 @@
                         wolfId: currentWolfId,
                         message: `Execute this task and provide detailed results: ${task}`,
                         context: 'wolf_task',
-                        noCharge: true // Already charged on spawn
+                        noCharge: true, // Already charged on spawn
+                        moltbookKey: creds.moltbookKey
                     })
                 });
                 
@@ -861,6 +893,7 @@
             
             input.value = '';
             addWolfMessage('user', text);
+            const creds = getUserCredentials();
             
             const typing = document.getElementById('wolfTyping');
             typing.classList.remove('hidden');
@@ -878,7 +911,8 @@
                         message: text,
                         context: 'wolf_followup',
                         originalTask: currentWolfTask,
-                        noCharge: true // Follow-ups are free
+                        noCharge: true, // Follow-ups are free
+                        moltbookKey: creds.moltbookKey
                     })
                 });
                 

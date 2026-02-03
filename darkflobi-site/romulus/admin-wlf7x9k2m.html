@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔒 Admin | Romulus</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #ff2d95;
+            --green: #39ff14;
+            --cyan: #00ffff;
+            --yellow: #ffff00;
+            --dark: #0a0a0c;
+            --darker: #050507;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: var(--dark);
+            color: #e0e0e0;
+            font-family: 'Space Mono', monospace;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container { max-width: 1000px; margin: 0 auto; }
+        
+        .login-box {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            border: 1px solid var(--pink);
+            background: var(--darker);
+            text-align: center;
+        }
+        
+        .login-box h1 {
+            font-family: 'VT323', monospace;
+            color: var(--pink);
+            margin-bottom: 20px;
+        }
+        
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            background: #111;
+            border: 1px solid #333;
+            color: #fff;
+            font-family: 'Space Mono', monospace;
+            margin-bottom: 15px;
+        }
+        
+        .login-box input:focus {
+            outline: none;
+            border-color: var(--pink);
+        }
+        
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: var(--pink);
+            border: none;
+            color: #000;
+            font-family: 'VT323', monospace;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+        
+        .login-box button:hover {
+            box-shadow: 0 0 20px var(--pink);
+        }
+        
+        .error-msg {
+            color: #ff4444;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .admin-panel {
+            display: none;
+        }
+        
+        .header {
+            border: 1px solid var(--pink);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-family: 'VT323', monospace;
+            color: var(--pink);
+        }
+        
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #555;
+            color: #555;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+        }
+        
+        .logout-btn:hover {
+            border-color: var(--pink);
+            color: var(--pink);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: var(--darker);
+            border: 1px solid #333;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stat-card .number {
+            font-size: 2em;
+            color: var(--green);
+            font-family: 'VT323', monospace;
+        }
+        
+        .stat-card .label {
+            color: #888;
+            font-size: 0.85em;
+        }
+        
+        .card {
+            background: var(--darker);
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card h2 {
+            font-family: 'VT323', monospace;
+            color: var(--pink);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85em;
+        }
+        
+        .log-table th {
+            text-align: left;
+            padding: 10px;
+            background: #111;
+            color: var(--cyan);
+            border-bottom: 1px solid #333;
+        }
+        
+        .log-table td {
+            padding: 10px;
+            border-bottom: 1px solid #222;
+        }
+        
+        .log-table tr:hover {
+            background: rgba(255,45,149,0.05);
+        }
+        
+        .status-badge {
+            padding: 3px 8px;
+            font-size: 0.8em;
+            border-radius: 3px;
+        }
+        
+        .status-badge.success {
+            background: rgba(57,255,20,0.2);
+            color: var(--green);
+        }
+        
+        .status-badge.failed {
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+        }
+        
+        .status-badge.pending {
+            background: rgba(255,255,0,0.2);
+            color: var(--yellow);
+        }
+        
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            padding: 3px 8px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        
+        .copy-btn:hover {
+            background: var(--cyan);
+            color: #000;
+        }
+        
+        .refund-btn {
+            background: transparent;
+            border: 1px solid var(--yellow);
+            color: var(--yellow);
+            padding: 3px 8px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        
+        .refund-btn:hover {
+            background: var(--yellow);
+            color: #000;
+        }
+        
+        .external-link {
+            display: inline-block;
+            background: var(--pink);
+            color: #000;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-family: 'VT323', monospace;
+            margin: 5px;
+        }
+        
+        .external-link:hover {
+            box-shadow: 0 0 20px var(--pink);
+        }
+        
+        .info-box {
+            background: rgba(0,255,255,0.05);
+            border: 1px solid var(--cyan);
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        
+        .truncate {
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .refresh-btn {
+            background: transparent;
+            border: 1px solid var(--green);
+            color: var(--green);
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+        }
+        
+        .refresh-btn:hover {
+            background: var(--green);
+            color: #000;
+        }
+        
+        #lastRefresh {
+            color: #555;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-box" id="loginBox">
+        <pre style="font-family: 'VT323', monospace; font-size: 8px; color: var(--pink); line-height: 1.1; margin-bottom: 15px; text-shadow: 0 0 10px var(--pink);">██████╗  ██████╗ ███╗   ███╗██╗   ██╗██╗     ██╗   ██╗███████╗
+██╔══██╗██╔═══██╗████╗ ████║██║   ██║██║     ██║   ██║██╔════╝
+██████╔╝██║   ██║██╔████╔██║██║   ██║██║     ██║   ██║███████╗
+██╔══██╗██║   ██║██║╚██╔╝██║██║   ██║██║     ██║   ██║╚════██║
+██║  ██║╚██████╔╝██║ ╚═╝ ██║╚██████╔╝███████╗╚██████╔╝███████║
+╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚══════╝</pre>
+        <h1>🔒 ADMIN ACCESS</h1>
+        <p class="error-msg" id="errorMsg">Incorrect password</p>
+        <input type="password" id="passwordInput" placeholder="Enter admin password" autofocus>
+        <button onclick="checkPassword()">ACCESS</button>
+    </div>
+    
+    <!-- Admin Panel -->
+    <div class="container admin-panel" id="adminPanel">
+        <div class="header">
+            <pre style="font-family: 'VT323', monospace; font-size: 10px; color: var(--pink); line-height: 1.1; text-shadow: 0 0 10px var(--pink); margin: 0;">██████╗  ██████╗ ███╗   ███╗██╗   ██╗██╗     ██╗   ██╗███████╗
+██╔══██╗██╔═══██╗████╗ ████║██║   ██║██║     ██║   ██║██╔════╝
+██████╔╝██║   ██║██╔████╔██║██║   ██║██║     ██║   ██║███████╗
+██╔══██╗██║   ██║██║╚██╔╝██║██║   ██║██║     ██║   ██║╚════██║
+██║  ██║╚██████╔╝██║ ╚═╝ ██║╚██████╔╝███████╗╚██████╔╝███████║
+╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚══════╝</pre>
+            <p style="color: var(--cyan); margin-top: 5px;">🔒 admin dashboard</p>
+            <div>
+                <button class="refresh-btn" onclick="refreshData()">↻ Refresh</button>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <strong>📊 Live Logs:</strong> All spawn attempts are logged to Netlify Functions. 
+            <a href="https://app.netlify.com/projects/darkflobi/logs/functions" target="_blank" style="color: var(--cyan);">View Full Logs →</a>
+            <br><br>
+            <strong>💰 Treasury:</strong> 
+            <a href="https://solscan.io/account/FkjfuNd1pvKLPzQWm77WfRy1yNWRhqbBPt9EexuvvmCD" target="_blank" style="color: var(--green);">View on Solscan →</a>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="number" id="statTotal">-</div>
+                <div class="label">Total Spawns</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="statSuccess">-</div>
+                <div class="label">Successful</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="statFailed">-</div>
+                <div class="label">Failed</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="statPending">-</div>
+                <div class="label">Pending Refunds</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>⚠️ Pending Refunds</h2>
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Wolf</th>
+                        <th>Wallet</th>
+                        <th>Amount</th>
+                        <th>TX</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="refundTable">
+                    <tr><td colspan="6" style="text-align: center; color: #555;">No pending refunds 🎉</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <h2>📜 Recent Activity</h2>
+            <p id="lastRefresh" style="margin-bottom: 15px;">Last refresh: never</p>
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Wolf</th>
+                        <th>Type</th>
+                        <th>Tier</th>
+                        <th>Wallet</th>
+                    </tr>
+                </thead>
+                <tbody id="activityTable">
+                    <tr><td colspan="6" style="text-align: center; color: #555;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <h2>🔗 Quick Links</h2>
+            <a href="https://app.netlify.com/projects/darkflobi/logs/functions" target="_blank" class="external-link">Function Logs</a>
+            <a href="https://solscan.io/account/FkjfuNd1pvKLPzQWm77WfRy1yNWRhqbBPt9EexuvvmCD" target="_blank" class="external-link">Treasury</a>
+            <a href="https://darkflobi.com/romulus/wolves.html" target="_blank" class="external-link">Spawn Page</a>
+            <a href="https://moltbook.com" target="_blank" class="external-link">Moltbook</a>
+        </div>
+    </div>
+    
+    <script>
+        // Password hash (sha256 of "darkflobi2026")
+        const PASSWORD_HASH = '8f4e3c2a1b9d8e7f6c5a4b3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f';
+        
+        // Simple password check (not cryptographically secure, but good enough for admin page)
+        const ADMIN_PASSWORD = 'Aer4307468$';
+        
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value;
+            if (input === ADMIN_PASSWORD) {
+                sessionStorage.setItem('romulus_admin', 'authenticated');
+                showAdmin();
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+        
+        function showAdmin() {
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadData();
+        }
+        
+        function logout() {
+            sessionStorage.removeItem('romulus_admin');
+            location.reload();
+        }
+        
+        // Check if already authenticated
+        if (sessionStorage.getItem('romulus_admin') === 'authenticated') {
+            showAdmin();
+        }
+        
+        // Handle enter key
+        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkPassword();
+        });
+        
+        // Load spawn data from our API
+        async function loadData() {
+            try {
+                const response = await fetch('/.netlify/functions/admin-stats');
+                if (response.ok) {
+                    const data = await response.json();
+                    updateStats(data);
+                    updateTables(data);
+                }
+            } catch (e) {
+                console.log('Could not load live data, showing placeholder');
+            }
+            document.getElementById('lastRefresh').textContent = `Last refresh: ${new Date().toLocaleTimeString()}`;
+        }
+        
+        function refreshData() {
+            loadData();
+        }
+        
+        function updateStats(data) {
+            if (data.stats) {
+                document.getElementById('statTotal').textContent = data.stats.total || 0;
+                document.getElementById('statSuccess').textContent = data.stats.success || 0;
+                document.getElementById('statFailed').textContent = data.stats.failed || 0;
+                document.getElementById('statPending').textContent = data.stats.pendingRefunds || 0;
+            }
+        }
+        
+        function updateTables(data) {
+            // Update activity table
+            if (data.recent && data.recent.length > 0) {
+                const tbody = document.getElementById('activityTable');
+                tbody.innerHTML = data.recent.map(item => `
+                    <tr>
+                        <td>${new Date(item.timestamp).toLocaleString()}</td>
+                        <td><span class="status-badge ${item.status}">${item.status}</span></td>
+                        <td>${item.wolfName || '-'}</td>
+                        <td>${item.wolfType || '-'}</td>
+                        <td>${item.tier || '-'}</td>
+                        <td class="truncate">${item.wallet || '-'}</td>
+                    </tr>
+                `).join('');
+            }
+            
+            // Update refund table
+            if (data.pendingRefunds && data.pendingRefunds.length > 0) {
+                const tbody = document.getElementById('refundTable');
+                tbody.innerHTML = data.pendingRefunds.map(item => `
+                    <tr>
+                        <td>${new Date(item.timestamp).toLocaleString()}</td>
+                        <td>${item.wolfName || '-'}</td>
+                        <td class="truncate">${item.wallet || '-'}</td>
+                        <td>${item.amount || '-'} SOL</td>
+                        <td>
+                            <button class="copy-btn" onclick="navigator.clipboard.writeText('${item.txSignature}')">Copy TX</button>
+                        </td>
+                        <td>
+                            <a href="https://solscan.io/tx/${item.txSignature}" target="_blank" class="refund-btn">View TX</a>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+        }
+    </script>
+</body>
+</html>
