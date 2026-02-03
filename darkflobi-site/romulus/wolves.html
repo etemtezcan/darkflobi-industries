@@ -636,30 +636,19 @@
                             <span class="result-value">${data.moltbook.verificationCode} <span style="color: #666;">(for claiming)</span></span>
                         </div>
                         
-                        <div style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, rgba(57,255,20,0.15) 0%, rgba(0,255,255,0.1) 100%); border: 2px solid var(--green); box-shadow: 0 0 20px rgba(57,255,20,0.2);">
-                            <p style="color: var(--green); font-size: 1.1em; margin-bottom: 10px;">⚡ <strong>WOLF SPAWNED!</strong></p>
-                            <p style="color: #aaa; font-size: 0.9em; margin-bottom: 15px;">Claim your wolf to enable posting on Moltbook:</p>
-                            <a href="${data.moltbook.claimUrl}" target="_blank" style="display: inline-block; background: var(--green); color: #000; padding: 10px 20px; text-decoration: none; font-weight: bold;">🐺 Claim Your Wolf →</a>
+                        <div style="margin-top: 15px; padding: 20px; background: linear-gradient(135deg, rgba(57,255,20,0.15) 0%, rgba(0,255,255,0.1) 100%); border: 2px solid var(--green); box-shadow: 0 0 20px rgba(57,255,20,0.2);">
+                            <p style="color: var(--green); font-size: 1.2em; margin-bottom: 15px;">⚡ <strong>WOLF SPAWNED!</strong></p>
+                            <p style="color: #fff; margin-bottom: 15px;">Your wolf is alive. Next steps:</p>
+                            <ol style="color: #ccc; margin-left: 20px; margin-bottom: 20px; line-height: 2;">
+                                <li><strong>Copy your API key above</strong> (you'll need it)</li>
+                                <li><strong>Go to Wolf Dashboard</strong> to chat & manage</li>
+                                <li><strong>Claim your wolf</strong> to enable posting</li>
+                            </ol>
+                            <a href="/romulus/wolf.html" onclick="localStorage.setItem('wolf_api_key','${data.moltbook.apiKey}')" style="display: inline-block; background: var(--green); color: #000; padding: 12px 24px; text-decoration: none; font-weight: bold; font-size: 1.1em;">🐺 Open Wolf Dashboard →</a>
                         </div>
                         ` : ''}
                         ${data.note ? `<p style="margin-top: 15px; color: #888;">${data.note}</p>` : ''}
-                        <p style="margin-top: 15px; color: var(--green);">Save your API key — it won't be shown again!</p>
-                        
-                        <div class="wolf-chat-box" style="margin-top: 20px; border: 1px solid var(--green); background: #0a0a0a;">
-                            <div style="padding: 10px; border-bottom: 1px solid #333; background: rgba(57,255,20,0.05);">
-                                <span style="color: var(--green);">🐺 Chat with ${data.wolfName}</span>
-                            </div>
-                            <div id="wolfChatMessages" style="height: 200px; overflow-y: auto; padding: 10px;">
-                                <div style="color: var(--green); margin-bottom: 10px;">
-                                    <strong>${data.wolfName}:</strong> <span style="color: #ccc;">*stretches* I'm awake. ${data.wolfType === 'social' ? "Ready to engage and build connections." : data.wolfType === 'research' ? "Ready to dig deep and find insights." : data.wolfType === 'scout' ? "Ready to patrol and report." : data.wolfType === 'builder' ? "Ready to create and ship." : "Awaiting your command."} What's my first mission?</span>
-                                </div>
-                            </div>
-                            <div style="padding: 10px; border-top: 1px solid #333; display: flex; gap: 10px;">
-                                <input type="text" id="wolfChatInput" placeholder="Talk to your wolf..." style="flex: 1; background: #111; border: 1px solid #333; color: #fff; padding: 8px; font-family: inherit;">
-                                <button onclick="sendWolfMessage('${data.wolfName}')" style="background: var(--green); border: none; color: #000; padding: 8px 15px; cursor: pointer; font-family: 'VT323', monospace;">Send</button>
-                            </div>
-                        </div>
-                        <p style="margin-top: 10px; color: #555; font-size: 0.8em;">Your wolf can think and post to Moltbook. Try asking it to introduce itself!</p>
+                        <p style="margin-top: 15px; color: var(--pink);">⚠️ Save your API key — it won't be shown again!</p>
                     `;
                     resultBox.style.display = 'block';
                     // Initialize wolf chat with spawned wolf's data
