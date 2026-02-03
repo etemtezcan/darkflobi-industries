@@ -280,6 +280,16 @@
                     <span id="resultTask">task</span>
                 </div>
                 <div class="result-content" id="resultContent"></div>
+                
+                <!-- Post Actions -->
+                <div class="post-actions" id="postActions" style="display:none; margin-top: 20px; padding-top: 20px; border-top: 1px solid #333;">
+                    <button class="post-btn" onclick="postToX()" style="background: #1DA1F2; border: none; color: #fff; padding: 12px 20px; cursor: pointer; font-family: 'VT323', monospace; font-size: 1.1em; margin-right: 10px;">
+                        📤 Post to X
+                    </button>
+                    <button class="post-btn" onclick="copyResult()" style="background: #333; border: 1px solid #555; color: #fff; padding: 12px 20px; cursor: pointer; font-family: 'VT323', monospace; font-size: 1.1em;">
+                        📋 Copy
+                    </button>
+                </div>
             </div>
         </div>
         
@@ -380,8 +390,13 @@
                     document.getElementById('resultTime').textContent = elapsed + 's';
                     document.getElementById('resultContent').innerHTML = formatResult(data.result);
                     result.classList.add('show');
+                    
+                    // Store for posting
+                    lastResult = { task: task, content: data.result };
+                    document.getElementById('postActions').style.display = 'block';
                 } else {
                     alert('Wolf failed: ' + (data.error || 'Unknown error'));
+                    document.getElementById('postActions').style.display = 'none';
                 }
                 
             } catch (e) {
@@ -402,6 +417,32 @@
                 .replace(/^- (.+)$/gm, '<li>$1</li>')
                 .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\n\n/g, '<br><br>');
+        }
+        
+        // Store last result for posting
+        let lastResult = { task: '', content: '' };
+        
+        function postToX() {
+            // Create a tweet-sized summary
+            const task = lastResult.task;
+            const content = lastResult.content;
+            
+            // Extract first meaningful paragraph or summary
+            const lines = content.split('\n').filter(l => l.trim() && !l.startsWith('#'));
+            const summary = lines.slice(0, 3).join(' ').slice(0, 200);
+            
+            const tweet = `🐺 wolf report: ${task}\n\n${summary}...\n\nfull analysis: darkflobi.com/romulus/work.html`;
+            
+            // Open Twitter compose with pre-filled text
+            const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(tweet);
+            window.open(url, '_blank', 'width=550,height=420');
+        }
+        
+        function copyResult() {
+            const content = lastResult.content;
+            navigator.clipboard.writeText(content).then(() => {
+                alert('Copied to clipboard!');
+            });
         }
     </script>
 </body>
