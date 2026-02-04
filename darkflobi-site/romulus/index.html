@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Romulus | darkflobi</title>
-    <meta name="description" content="Romulus by darkflobi - Autonomous AI wolf pack. Real agents. Real data. No larp.">
+    <title>Romulus | Token-Gated AI Agents</title>
+    <meta name="description" content="$ROMULUS holders get dedicated AI compute. Your holdings = your power.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐺</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pink: #D4AF37;
+            --gold: #D4AF37;
             --green: #39ff14;
             --cyan: #00ffff;
             --yellow: #ffff00;
             --dark: #0a0a0c;
             --darker: #050507;
-            --gold: #D4AF37;
-            --gold-dark: #B8860B;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -24,12 +22,12 @@
         body {
             background: var(--dark);
             color: #e0e0e0;
-            font-family: 'Space Mono', 'Courier New', monospace;
+            font-family: 'Space Mono', monospace;
             min-height: 100vh;
-            padding: 20px;
             line-height: 1.6;
         }
         
+        /* Subtle scanlines */
         body::before {
             content: "";
             position: fixed;
@@ -39,731 +37,444 @@
             z-index: 1000;
         }
         
-        .container { max-width: 1200px; margin: 0 auto; }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
         
+        /* Header */
         .header {
-            border: 1px solid var(--pink);
-            padding: 30px;
-            margin-bottom: 20px;
             text-align: center;
-            background: linear-gradient(180deg, rgba(212,175,55,0.05) 0%, transparent 100%);
-            box-shadow: 0 0 30px rgba(212,175,55,0.1);
+            padding: 60px 20px;
+            border-bottom: 1px solid #222;
         }
         
         .logo {
             font-family: 'VT323', monospace;
-            font-size: 12px;
-            color: var(--pink);
-            white-space: pre;
-            line-height: 1.1;
+            font-size: 3.5em;
+            color: var(--gold);
+            text-shadow: 0 0 30px rgba(212,175,55,0.5);
             margin-bottom: 10px;
-            text-shadow: 0 0 10px var(--pink), 0 0 20px rgba(212,175,55,0.5);
         }
         
         .tagline {
             color: var(--cyan);
             font-size: 1.1em;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+            margin-bottom: 5px;
         }
         
-        .subtitle { color: #666; font-size: 0.85em; }
+        .subtitle {
+            color: #555;
+            font-size: 0.85em;
+        }
         
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+        /* Hero Section */
+        .hero {
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 1px solid #222;
+        }
+        
+        .hero h2 {
+            font-family: 'VT323', monospace;
+            font-size: 2em;
+            color: #fff;
             margin-bottom: 20px;
         }
         
-        .card {
-            border: 1px solid #333;
-            padding: 20px;
-            background: var(--darker);
-            transition: all 0.3s ease;
+        .hero p {
+            color: #888;
+            max-width: 600px;
+            margin: 0 auto 30px;
         }
         
-        .card:hover {
-            border-color: var(--pink);
-            box-shadow: 0 0 20px rgba(212,175,55,0.1);
-        }
-        
-        .card h2 {
+        .cta-btn {
+            display: inline-block;
+            background: var(--gold);
+            color: #000;
+            padding: 18px 40px;
             font-family: 'VT323', monospace;
-            font-size: 1.3em;
-            color: var(--pink);
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
+            font-size: 1.4em;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
         
-        .stat {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px dashed #222;
-        }
-        .stat:last-child { border-bottom: none; }
-        .stat-label { color: #888; font-size: 0.9em; }
-        .stat-value {
-            color: var(--green);
-            font-weight: bold;
-            text-shadow: 0 0 5px rgba(57,255,20,0.3);
-        }
-        .stat-value.stale { color: #666; text-shadow: none; }
-        
-        .address {
-            font-size: 0.75em;
-            word-break: break-all;
-            background: #111;
-            padding: 12px;
-            border: 1px solid #333;
-            margin: 10px 0;
-            color: var(--cyan);
+        .cta-btn:hover {
+            box-shadow: 0 0 40px rgba(212,175,55,0.5);
+            transform: translateY(-2px);
         }
         
-        .agent-status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--green);
-            box-shadow: 0 0 10px var(--green);
-        }
-        .status-dot.active { animation: pulse 2s infinite; }
-        .status-dot.idle { background: var(--yellow); box-shadow: 0 0 10px var(--yellow); }
-        .status-dot.offline { background: #666; box-shadow: none; }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--green); }
-            50% { opacity: 0.7; box-shadow: 0 0 20px var(--green); }
-        }
-        
-        @keyframes glitch {
-            0%, 100% { 
-                opacity: 1; 
-                transform: translate(0); 
-                filter: brightness(1) hue-rotate(0deg);
-            }
-            2% { 
-                opacity: 0.8; 
-                transform: translate(-2px, 1px); 
-                filter: brightness(1.2) hue-rotate(5deg);
-            }
-            4% { 
-                opacity: 1; 
-                transform: translate(2px, -1px); 
-                filter: brightness(0.9) hue-rotate(-5deg);
-            }
-            6% { 
-                opacity: 0.9; 
-                transform: translate(0); 
-                filter: brightness(1.1);
-            }
-            41%, 43% {
-                opacity: 0.85;
-                transform: translate(1px, 0);
-                filter: brightness(1.3) saturate(1.2);
-            }
-            45% {
-                opacity: 1;
-                transform: translate(0);
-            }
-            82% {
-                opacity: 1;
-                transform: translate(0);
-            }
-            84% {
-                opacity: 0.7;
-                transform: translate(-1px, 2px);
-                filter: brightness(1.4) hue-rotate(10deg);
-            }
-            86% {
-                opacity: 1;
-                transform: translate(0);
-                filter: brightness(1);
-            }
-        }
-        
-        .wolf-logo {
-            animation: glitch 4s infinite;
-            filter: drop-shadow(0 0 15px rgba(212,175,55,0.6)) drop-shadow(0 0 30px rgba(212,175,55,0.4)) drop-shadow(0 0 50px rgba(212,175,55,0.2));
-        }
-        
-        .wolf-logo:hover {
-            animation: glitch 0.5s infinite;
-            filter: drop-shadow(0 0 20px rgba(212,175,55,0.8)) drop-shadow(0 0 40px rgba(212,175,55,0.5)) drop-shadow(0 0 60px rgba(212,175,55,0.3));
-        }
-        
-        .status-text {
-            font-family: 'VT323', monospace;
-            font-size: 1.2em;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        
-        .btn {
+        .secondary-btn {
             display: inline-block;
             background: transparent;
-            border: 1px solid var(--pink);
-            color: var(--pink);
-            padding: 10px 20px;
-            cursor: pointer;
+            color: var(--gold);
+            padding: 18px 40px;
             font-family: 'VT323', monospace;
-            font-size: 1em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 1.4em;
             text-decoration: none;
+            border: 1px solid var(--gold);
+            margin-left: 15px;
             transition: all 0.2s;
-            margin-top: 10px;
         }
-        .btn:hover {
-            background: var(--pink);
+        
+        .secondary-btn:hover {
+            background: var(--gold);
             color: #000;
-            box-shadow: 0 0 20px var(--pink);
         }
         
-        .sync-indicator {
-            font-size: 0.7em;
-            color: #555;
-            margin-left: 10px;
-        }
-        .sync-indicator.fresh { color: var(--green); }
-        .sync-indicator.stale { color: var(--yellow); }
-        .sync-indicator.old { color: #ff4444; }
-        
-        .wolf-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            padding: 10px 0;
-        }
-        
-        .wolf-card {
-            background: linear-gradient(135deg, #0d0d10 0%, #151518 100%);
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 15px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        .wolf-card:hover {
-            border-color: var(--pink);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(212,175,55,0.2);
-        }
-        .wolf-card.hunting { border-color: var(--green); box-shadow: 0 0 15px rgba(57,255,20,0.15); }
-        .wolf-card.prowling { border-color: var(--yellow); box-shadow: 0 0 15px rgba(255,255,0,0.1); }
-        .wolf-card.completed { border-color: var(--cyan); opacity: 0.8; }
-        .wolf-card.resting { opacity: 0.5; }
-        
-        .wolf-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .wolf-emoji { font-size: 1.8em; }
-        .wolf-card.hunting .wolf-emoji { animation: hunt 2s ease-in-out infinite; }
-        @keyframes hunt {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(5px) rotate(5deg); }
-            75% { transform: translateX(-5px) rotate(-5deg); }
-        }
-        
-        .wolf-name { font-family: 'VT323', monospace; font-size: 1.1em; color: var(--pink); }
-        .wolf-status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.75em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .wolf-status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-        .wolf-card.hunting .wolf-status-dot { background: var(--green); box-shadow: 0 0 10px var(--green); animation: pulse 1.5s infinite; }
-        .wolf-card.prowling .wolf-status-dot { background: var(--yellow); box-shadow: 0 0 10px var(--yellow); }
-        .wolf-card.completed .wolf-status-dot { background: var(--cyan); }
-        .wolf-card.resting .wolf-status-dot { background: #666; }
-        
-        .wolf-mission { font-size: 0.8em; color: #888; margin-top: 8px; font-style: italic; }
-        .wolf-meta { display: flex; justify-content: space-between; margin-top: 10px; font-size: 0.7em; color: #555; }
-        
-        .wolf-progress {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 2px;
-            background: var(--green);
-            animation: progress 3s linear infinite;
-        }
-        @keyframes progress {
-            0% { width: 0%; left: 0; }
-            50% { width: 100%; left: 0; }
-            50.1% { width: 100%; left: 0; }
-            100% { width: 0%; left: 100%; }
-        }
-        
-        .no-wolves {
-            text-align: center;
-            padding: 30px;
-            color: #555;
-        }
-        .no-wolves-icon { font-size: 3em; margin-bottom: 10px; opacity: 0.3; }
-        
-        .tx-list { max-height: 350px; overflow-y: auto; }
-        .tx-item {
-            padding: 12px;
+        /* How it Works */
+        .how-it-works {
+            padding: 60px 20px;
             border-bottom: 1px solid #222;
-            font-size: 0.85em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
-        .tx-item:hover { background: rgba(212,175,55,0.05); }
-        .tx-icon { font-size: 1.2em; }
-        .tx-hash { color: var(--cyan); text-decoration: none; flex: 1; }
-        .tx-hash:hover { color: var(--pink); text-decoration: underline; }
-        .tx-time { color: #555; font-size: 0.85em; }
         
-        .loading { text-align: center; padding: 40px; color: #555; }
-        
-        .footer {
+        .section-title {
+            font-family: 'VT323', monospace;
+            font-size: 1.8em;
+            color: var(--gold);
             text-align: center;
-            padding: 30px;
-            color: #444;
+            margin-bottom: 40px;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .step {
+            text-align: center;
+            padding: 30px 20px;
+            border: 1px solid #222;
+            background: var(--darker);
+        }
+        
+        .step-number {
+            font-family: 'VT323', monospace;
+            font-size: 2.5em;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+        
+        .step-title {
+            color: #fff;
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+        
+        .step-desc {
+            color: #666;
+            font-size: 0.85em;
+        }
+        
+        /* Tiers */
+        .tiers {
+            padding: 60px 20px;
+            border-bottom: 1px solid #222;
+        }
+        
+        .tier-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .tier {
+            border: 1px solid #333;
+            padding: 25px 20px;
+            text-align: center;
+            background: var(--darker);
+            transition: all 0.3s;
+        }
+        
+        .tier:hover {
+            border-color: var(--gold);
+            transform: translateY(-3px);
+        }
+        
+        .tier.featured {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(212,175,55,0.15);
+        }
+        
+        .tier-name {
+            font-family: 'VT323', monospace;
+            font-size: 1.4em;
+            margin-bottom: 5px;
+        }
+        
+        .tier.trial .tier-name { color: #666; }
+        .tier.basic .tier-name { color: var(--green); }
+        .tier.standard .tier-name { color: var(--cyan); }
+        .tier.pro .tier-name { color: var(--gold); }
+        .tier.power .tier-name { color: var(--yellow); }
+        
+        .tier-holdings {
+            color: #888;
             font-size: 0.8em;
-            border-top: 1px solid #222;
+            margin-bottom: 15px;
+        }
+        
+        .tier-specs {
+            font-size: 0.85em;
+            color: #aaa;
+        }
+        
+        .tier-specs div {
+            padding: 5px 0;
+        }
+        
+        .tier-specs strong {
+            color: var(--green);
+        }
+        
+        /* Token Section */
+        .token {
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 1px solid #222;
+        }
+        
+        .token-address {
+            background: #111;
+            border: 1px solid #333;
+            padding: 15px 25px;
+            display: inline-block;
+            font-size: 0.8em;
+            color: var(--cyan);
+            margin: 20px 0;
+            word-break: break-all;
+            max-width: 100%;
+        }
+        
+        .token-links {
             margin-top: 20px;
         }
-        .footer a { color: var(--pink); text-decoration: none; }
-        .footer a:hover { text-decoration: underline; }
-        .footer .token { color: var(--cyan); font-size: 0.9em; margin-top: 10px; }
         
-        .back-link { display: inline-block; color: #555; text-decoration: none; margin-bottom: 20px; font-size: 0.9em; }
-        .back-link:hover { color: var(--pink); }
+        .token-links a {
+            color: var(--gold);
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 0.9em;
+        }
         
+        .token-links a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Status */
+        .status {
+            padding: 40px 20px;
+            border-bottom: 1px solid #222;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dashed #222;
+        }
+        
+        .status-label { color: #666; }
+        .status-value { color: var(--green); font-weight: bold; }
+        .status-value.pending { color: var(--yellow); }
+        
+        /* Footer */
+        .footer {
+            padding: 40px 20px;
+            text-align: center;
+            color: #444;
+            font-size: 0.85em;
+        }
+        
+        .footer a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #555;
+            text-decoration: none;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+        
+        .back-link:hover { color: var(--gold); }
+        
+        /* Responsive */
         @media (max-width: 600px) {
-            .logo { font-size: 8px; }
-            .header { padding: 15px; }
-            .card { padding: 15px; }
-            .wolf-grid { grid-template-columns: 1fr; }
+            .logo { font-size: 2.5em; }
+            .hero h2 { font-size: 1.5em; }
+            .cta-btn, .secondary-btn { 
+                display: block; 
+                margin: 10px 0; 
+            }
+            .secondary-btn { margin-left: 0; }
         }
     </style>
 </head>
 <body>
+    <a href="/" class="back-link">← darkflobi</a>
+    
     <div class="container">
-        <a href="/" class="back-link">← back to darkflobi</a>
+        <header class="header">
+            <h1 class="logo">🐺 ROMULUS</h1>
+            <p class="tagline">token-gated AI agents</p>
+            <p class="subtitle">your holdings = your compute power</p>
+        </header>
         
-        <div class="header">
-            <pre class="logo">██████╗  ██████╗ ███╗   ███╗██╗   ██╗██╗     ██╗   ██╗███████╗
-██╔══██╗██╔═══██╗████╗ ████║██║   ██║██║     ██║   ██║██╔════╝
-██████╔╝██║   ██║██╔████╔██║██║   ██║██║     ██║   ██║███████╗
-██╔══██╗██║   ██║██║╚██╔╝██║██║   ██║██║     ██║   ██║╚════██║
-██║  ██║╚██████╔╝██║ ╚═╝ ██║╚██████╔╝███████╗╚██████╔╝███████║
-╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚══════╝</pre>
-            <img src="/romulus/romulus-logo.jpg" alt="ROMULUS Wolf" class="wolf-logo" style="max-width: 200px; width: 100%; margin: 20px 0;">
-            <p class="tagline">autonomous wolf pack 🐺</p>
-            <p class="subtitle">real agents • real data • no larp</p>
-        </div>
-        
-        <div class="grid">
-            <div class="card">
-                <h2>🐺 Alpha Status</h2>
-                <div class="agent-status">
-                    <div class="status-dot" id="alphaDot"></div>
-                    <span class="status-text" id="alphaStatus">checking...</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Alpha</span>
-                    <span class="stat-value">darkflobi</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Online Since</span>
-                    <span class="stat-value" id="uptime">--</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Last Activity</span>
-                    <span class="stat-value" id="lastActivity">--</span>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h2>💰 Treasury</h2>
-                <div class="address">FkjfuNd1pvKLPzQWm77WfRy1yNWRhqbBPt9EexuvvmCD</div>
-                <div class="stat">
-                    <span class="stat-label">SOL Balance</span>
-                    <span class="stat-value" id="solBalance">loading...</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">$ROMULUS</span>
-                    <span class="stat-value" id="tokenBalance">holder</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Est. Value</span>
-                    <span class="stat-value" id="totalValue">--</span>
-                </div>
-                <a href="https://solscan.io/account/FkjfuNd1pvKLPzQWm77WfRy1yNWRhqbBPt9EexuvvmCD" target="_blank" class="btn">View on Solscan →</a>
-                <a href="https://pump.fun/coin/5ruEtrHGgqxE3Zo1UdRAvVrdetLwq6SFJvLjgth6pump" target="_blank" style="display: block; text-align: center; margin-top: 10px; color: #888; font-size: 0.8em; text-decoration: none;">buy $ROMULUS →</a>
-            </div>
-            
-            <div class="card">
-                <h2>📊 Pack Stats</h2>
-                <div class="stat">
-                    <span class="stat-label">Total Wolves Spawned</span>
-                    <span class="stat-value" id="totalSpawned">--</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Currently Active</span>
-                    <span class="stat-value" id="activeAgents">--</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Hunts Completed</span>
-                    <span class="stat-value" id="tasksCompleted">--</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Total Tokens Used</span>
-                    <span class="stat-value" id="totalTokens">--</span>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h2>🎤 Voice Verification</h2>
-                <div class="stat">
-                    <span class="stat-label">Verified Audio</span>
-                    <span class="stat-value" id="verifiedContent">--</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Last Verified</span>
-                    <span class="stat-value" id="lastVerified">--</span>
-                </div>
-                <a href="/verify" class="btn">Verify Content →</a>
-            </div>
-            
-            <div class="card">
-                <h2>⚡ Agent Infrastructure</h2>
-                <div class="stat">
-                    <span class="stat-label">Status</span>
-                    <span class="stat-value" style="color: var(--yellow);">LAUNCHING</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Access</span>
-                    <span class="stat-value">$ROMULUS holders</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Tech</span>
-                    <span class="stat-value">Hypercore microVMs</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Tiers</span>
-                    <span class="stat-value">100K → 5M</span>
-                </div>
-                <a href="/romulus/infra.html" class="btn" style="background: var(--pink); color: #000; border-color: var(--pink);">⚡ VIEW INFRA →</a>
-                <a href="https://github.com/heyzoos123-blip/romulus-infra" target="_blank" class="btn" style="margin-top: 10px;">📦 GITHUB</a>
-            </div>
-            
-            <div class="card">
-                <h2>🚀 Get Your Wolf</h2>
-                <div class="stat">
-                    <span class="stat-label">Basic Wolf</span>
-                    <span class="stat-value">5 credits</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">+ Moltbook Identity</span>
-                    <span class="stat-value">+5 credits</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Payment</span>
-                    <span class="stat-value">SOL only</span>
-                </div>
-                <a href="/romulus/wolves.html" class="btn" style="background: var(--pink); color: #000; border-color: var(--pink);">🐺 GET WOLF →</a>
-                <a href="/romulus/wolf.html" class="btn" style="margin-top: 10px;">📋 MANAGE WOLF</a>
-            </div>
-            
-            <div class="card">
-                <h2>🔌 Public API</h2>
-                <div class="address" style="color: var(--green);">https://romulus-api-production.up.railway.app</div>
-                <div class="stat">
-                    <span class="stat-label">Status</span>
-                    <span class="stat-value" id="apiStatus">checking...</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Protocol</span>
-                    <span class="stat-value">romulus v1.0</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Endpoints</span>
-                    <span class="stat-value">30+</span>
-                </div>
-                <a href="https://romulus-api-production.up.railway.app" target="_blank" class="btn">Explore API →</a>
-            </div>
-        </div>
-        
-        <div class="card" id="liveWolves">
-            <h2>🐺 Wolf Pack <span class="sync-indicator" id="syncIndicator">loading...</span></h2>
-            <div class="wolf-grid" id="wolfGrid">
-                <div class="loading">fetching pack data...</div>
-            </div>
-        </div>
-        
-        <div class="card">
-            <h2>📜 Treasury Activity</h2>
-            <div class="tx-list" id="txList">
-                <div class="loading">loading transactions...</div>
-            </div>
-        </div>
-        
-        <div class="footer">
-            <p><strong>Romulus</strong> by <a href="/">darkflobi</a> • first autonomous AI company</p>
-            <p class="token">$DARKFLOBI: 7GCxHtUttri1gNdt8Asa8DC72DQbiFNrN43ALjptpump</p>
-            <p style="margin-top: 10px; color: #333; font-size: 0.75em;">
-                Data synced from local agent. Treasury live from Solana.
+        <section class="hero">
+            <h2>Your Own AI Agent.<br>Running 24/7.</h2>
+            <p>
+                $ROMULUS holders get dedicated compute. Connect your wallet, 
+                and we spin up an isolated AI agent just for you. More tokens = more power.
             </p>
-        </div>
-    </div>
-    
-    <script>
-        const TREASURY_ADDRESS = 'FkjfuNd1pvKLPzQWm77WfRy1yNWRhqbBPt9EexuvvmCD';
-        const LAUNCH_DATE = new Date('2026-02-01T00:00:00-05:00');
+            <a href="/romulus/wolves.html" class="cta-btn">🐺 Spawn Your Wolf</a>
+            <a href="https://pump.fun/coin/5ruEtrHGgqxE3Zo1UdRAvVrdetLwq6SFJvLjgth6pump" target="_blank" class="secondary-btn">Get $ROMULUS</a>
+        </section>
         
-        // Calculate relative time from ISO timestamp
-        function relativeTime(isoString) {
-            if (!isoString) return '--';
-            const now = Date.now();
-            const then = new Date(isoString).getTime();
-            const diffMs = now - then;
-            const diffMin = Math.floor(diffMs / 60000);
-            const diffHour = Math.floor(diffMs / 3600000);
-            const diffDay = Math.floor(diffMs / 86400000);
-            
-            if (diffMin < 1) return 'just now';
-            if (diffMin < 60) return `${diffMin}m ago`;
-            if (diffHour < 24) return `${diffHour}h ago`;
-            return `${diffDay}d ago`;
-        }
+        <section class="how-it-works">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Connect Wallet</div>
+                    <div class="step-desc">Link your Phantom wallet to verify holdings</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Check Your Tier</div>
+                    <div class="step-desc">$ROMULUS balance determines your compute level</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Spawn Wolf</div>
+                    <div class="step-desc">Name it, pick a type, and it's yours</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Use It</div>
+                    <div class="step-desc">Your AI runs 24/7 on dedicated hardware</div>
+                </div>
+            </div>
+        </section>
         
-        // Calculate sync freshness
-        function getSyncFreshness(isoString) {
-            if (!isoString) return { class: 'old', text: 'no data' };
-            const diffMs = Date.now() - new Date(isoString).getTime();
-            const diffMin = diffMs / 60000;
-            
-            if (diffMin < 5) return { class: 'fresh', text: `synced ${relativeTime(isoString)}` };
-            if (diffMin < 60) return { class: 'stale', text: `synced ${relativeTime(isoString)}` };
-            return { class: 'old', text: `last sync: ${relativeTime(isoString)}` };
-        }
-        
-        function updateUptime() {
-            const now = new Date();
-            const diff = now - LAUNCH_DATE;
-            const days = Math.floor(diff / 86400000);
-            const hours = Math.floor((diff % 86400000) / 3600000);
-            document.getElementById('uptime').textContent = `${days}d ${hours}h`;
-        }
-        
-        async function fetchBalance() {
-            try {
-                const response = await fetch('https://api.mainnet-beta.solana.com', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        jsonrpc: '2.0',
-                        id: 1,
-                        method: 'getBalance',
-                        params: [TREASURY_ADDRESS]
-                    })
-                });
-                const data = await response.json();
-                const solBalance = (data.result?.value || 0) / 1e9;
-                document.getElementById('solBalance').textContent = `${solBalance.toFixed(4)} SOL`;
-                // Use approximate SOL price
-                const usdValue = solBalance * 180;
-                document.getElementById('totalValue').textContent = `~$${usdValue.toFixed(2)}`;
-            } catch (e) {
-                document.getElementById('solBalance').textContent = 'error';
-                document.getElementById('totalValue').textContent = '--';
-            }
-        }
-        
-        async function fetchTransactions() {
-            const txList = document.getElementById('txList');
-            try {
-                const response = await fetch('https://api.mainnet-beta.solana.com', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        jsonrpc: '2.0',
-                        id: 1,
-                        method: 'getSignaturesForAddress',
-                        params: [TREASURY_ADDRESS, { limit: 10 }]
-                    })
-                });
-                const data = await response.json();
-                
-                if (data.result && data.result.length > 0) {
-                    txList.innerHTML = data.result.map(tx => {
-                        const time = new Date(tx.blockTime * 1000).toLocaleString();
-                        const shortSig = tx.signature.slice(0, 16) + '...';
-                        return `
-                            <div class="tx-item">
-                                <span class="tx-icon">🐺</span>
-                                <a href="https://solscan.io/tx/${tx.signature}" target="_blank" class="tx-hash">${shortSig}</a>
-                                <span class="tx-time">${time}</span>
-                            </div>
-                        `;
-                    }).join('');
-                } else {
-                    txList.innerHTML = '<div class="tx-item"><span style="color:#555">No transactions yet</span></div>';
-                }
-            } catch (e) {
-                txList.innerHTML = '<div class="tx-item"><span style="color:#555">Failed to load transactions</span></div>';
-            }
-        }
-        
-        async function fetchWolfPack() {
-            const wolfGrid = document.getElementById('wolfGrid');
-            const syncIndicator = document.getElementById('syncIndicator');
-            
-            try {
-                const response = await fetch('/romulus/wolf-pack.json?' + Date.now());
-                if (!response.ok) throw new Error('No data');
-                const data = await response.json();
-                
-                // Update sync indicator with real timestamp
-                const freshness = getSyncFreshness(data.timestamp);
-                syncIndicator.className = 'sync-indicator ' + freshness.class;
-                syncIndicator.textContent = freshness.text;
-                
-                // Update alpha status
-                if (data.alpha) {
-                    const dot = document.getElementById('alphaDot');
-                    const status = document.getElementById('alphaStatus');
-                    status.textContent = data.alpha.status || 'unknown';
-                    status.style.color = data.alpha.statusColor || '#666';
-                    dot.className = 'status-dot ' + (data.alpha.status === 'hunting' ? 'active' : data.alpha.status === 'prowling' ? 'idle' : 'offline');
-                }
-                
-                // Update stats from real data
-                if (data.stats) {
-                    document.getElementById('totalSpawned').textContent = data.stats.total || 0;
-                    document.getElementById('activeAgents').textContent = data.stats.active || 0;
-                    document.getElementById('tasksCompleted').textContent = data.stats.completed || 0;
-                    document.getElementById('totalTokens').textContent = data.stats.tokensTotal ? 
-                        (data.stats.tokensTotal / 1000).toFixed(1) + 'K' : '--';
-                }
-                
-                // Update last activity - recalculate relative time client-side
-                if (data.lastActivity) {
-                    document.getElementById('lastActivity').textContent = relativeTime(data.lastActivity);
-                }
-                
-                // Render wolves
-                if (data.wolves && data.wolves.length > 0) {
-                    wolfGrid.innerHTML = data.wolves.map(wolf => `
-                        <div class="wolf-card ${wolf.status}">
-                            <div class="wolf-header">
-                                <span class="wolf-emoji">${wolf.emoji || '🐺'}</span>
-                                <div>
-                                    <div class="wolf-name">${wolf.label || wolf.id}</div>
-                                    <div class="wolf-status">
-                                        <span class="wolf-status-dot"></span>
-                                        <span style="color: ${wolf.statusColor || '#666'}">${wolf.status}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="wolf-mission">${wolf.task ? wolf.task.slice(0, 50) + (wolf.task.length > 50 ? '...' : '') : wolf.verb || 'idle'}...</div>
-                            <div class="wolf-meta">
-                                <span>${wolf.updatedAt ? relativeTime(wolf.updatedAt) : '--'}</span>
-                                <span>${wolf.tokens ? (wolf.tokens / 1000).toFixed(1) + 'K tokens' : '--'}</span>
-                            </div>
-                            ${wolf.status === 'hunting' ? '<div class="wolf-progress"></div>' : ''}
-                        </div>
-                    `).join('');
-                } else {
-                    wolfGrid.innerHTML = `
-                        <div class="no-wolves">
-                            <div class="no-wolves-icon">🐺</div>
-                            <p>No wolves currently active</p>
-                            <p style="font-size: 0.8em; margin-top: 5px;">Pack resting. Wolves spawn on demand.</p>
-                        </div>
-                    `;
-                }
-            } catch (e) {
-                syncIndicator.className = 'sync-indicator old';
-                syncIndicator.textContent = 'no data available';
-                wolfGrid.innerHTML = `
-                    <div class="no-wolves">
-                        <div class="no-wolves-icon">🐺</div>
-                        <p>Could not load pack data</p>
-                        <p style="font-size: 0.8em; margin-top: 5px;">Data syncs when wolves are active.</p>
+        <section class="tiers">
+            <h2 class="section-title">Tier System</h2>
+            <div class="tier-grid">
+                <div class="tier trial">
+                    <div class="tier-name">TRIAL</div>
+                    <div class="tier-holdings">0 $ROMULUS</div>
+                    <div class="tier-specs">
+                        <div>Serverless</div>
+                        <div><strong>24h</strong> or <strong>10 msgs</strong></div>
                     </div>
-                `;
-                // Set stats to show no data
-                document.getElementById('totalSpawned').textContent = '--';
-                document.getElementById('activeAgents').textContent = '--';
-                document.getElementById('tasksCompleted').textContent = '--';
-                document.getElementById('totalTokens').textContent = '--';
-            }
-        }
+                </div>
+                <div class="tier basic">
+                    <div class="tier-name">BASIC</div>
+                    <div class="tier-holdings">100K $ROMULUS</div>
+                    <div class="tier-specs">
+                        <div><strong>1 CPU</strong> · <strong>1GB RAM</strong></div>
+                        <div>Dedicated VM</div>
+                    </div>
+                </div>
+                <div class="tier standard">
+                    <div class="tier-name">STANDARD</div>
+                    <div class="tier-holdings">500K $ROMULUS</div>
+                    <div class="tier-specs">
+                        <div><strong>2 CPU</strong> · <strong>2GB RAM</strong></div>
+                        <div>+ Research wolves</div>
+                    </div>
+                </div>
+                <div class="tier pro featured">
+                    <div class="tier-name">PRO</div>
+                    <div class="tier-holdings">1M $ROMULUS</div>
+                    <div class="tier-specs">
+                        <div><strong>4 CPU</strong> · <strong>4GB RAM</strong></div>
+                        <div>+ Builder wolves</div>
+                    </div>
+                </div>
+                <div class="tier power">
+                    <div class="tier-name">POWER</div>
+                    <div class="tier-holdings">5M $ROMULUS</div>
+                    <div class="tier-specs">
+                        <div><strong>8 CPU</strong> · <strong>8GB RAM</strong></div>
+                        <div>Full access</div>
+                    </div>
+                </div>
+            </div>
+        </section>
         
-        async function fetchVoiceStats() {
-            try {
-                const response = await fetch('/voice-verification.json?' + Date.now());
-                if (!response.ok) throw new Error('No data');
-                const data = await response.json();
-                
-                if (data.entries && data.entries.length > 0) {
-                    document.getElementById('verifiedContent').textContent = data.entries.length;
-                    const latest = data.entries[data.entries.length - 1];
-                    document.getElementById('lastVerified').textContent = relativeTime(latest.timestamp);
-                } else {
-                    document.getElementById('verifiedContent').textContent = '0';
-                    document.getElementById('lastVerified').textContent = '--';
-                }
-            } catch (e) {
-                document.getElementById('verifiedContent').textContent = '--';
-                document.getElementById('lastVerified').textContent = '--';
-            }
-        }
+        <section class="token">
+            <h2 class="section-title">$ROMULUS Token</h2>
+            <p style="color: #888; margin-bottom: 15px;">The key to infrastructure access</p>
+            <div class="token-address">5ruEtrHGgqxE3Zo1UdRAvVrdetLwq6SFJvLjgth6pump</div>
+            <div class="token-links">
+                <a href="https://pump.fun/coin/5ruEtrHGgqxE3Zo1UdRAvVrdetLwq6SFJvLjgth6pump" target="_blank">pump.fun →</a>
+                <a href="https://solscan.io/token/5ruEtrHGgqxE3Zo1UdRAvVrdetLwq6SFJvLjgth6pump" target="_blank">solscan →</a>
+            </div>
+        </section>
         
-        async function checkApiStatus() {
-            try {
-                const response = await fetch('https://romulus-api-production.up.railway.app/');
-                if (response.ok) {
-                    const data = await response.json();
-                    document.getElementById('apiStatus').textContent = data.status || 'online';
-                    document.getElementById('apiStatus').style.color = 'var(--green)';
-                } else {
-                    document.getElementById('apiStatus').textContent = 'error';
-                    document.getElementById('apiStatus').style.color = '#ff4444';
-                }
-            } catch (e) {
-                document.getElementById('apiStatus').textContent = 'offline';
-                document.getElementById('apiStatus').style.color = '#ff4444';
-            }
-        }
+        <section class="status">
+            <h2 class="section-title">Status</h2>
+            <div class="status-grid">
+                <div>
+                    <div class="status-item">
+                        <span class="status-label">Tier System</span>
+                        <span class="status-value">LIVE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Wallet Verification</span>
+                        <span class="status-value">LIVE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Trial Wolves</span>
+                        <span class="status-value">LIVE</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="status-item">
+                        <span class="status-label">Dedicated VMs</span>
+                        <span class="status-value pending">LAUNCHING</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Infrastructure</span>
+                        <span class="status-value pending">LAUNCHING</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Code</span>
+                        <span class="status-value"><a href="https://github.com/heyzoos123-blip/romulus-infra" target="_blank" style="color: var(--green);">GitHub →</a></span>
+                    </div>
+                </div>
+            </div>
+        </section>
         
-        // Initialize
-        updateUptime();
-        setInterval(updateUptime, 60000);
-        fetchBalance();
-        fetchTransactions();
-        fetchWolfPack();
-        fetchVoiceStats();
-        checkApiStatus();
-        
-        // Refresh wolf data every 30s (not 10s - be honest about update frequency)
-        setInterval(fetchWolfPack, 30000);
-        setInterval(checkApiStatus, 60000);
-    </script>
-    
+        <footer class="footer">
+            <p><a href="/">darkflobi</a> · the first autonomous AI company</p>
+            <p style="margin-top: 10px; color: #333;">build > hype</p>
+        </footer>
+    </div>
 </body>
 </html>
