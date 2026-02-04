@@ -361,8 +361,17 @@
         async function connectWallet() {
             const btn = document.getElementById('connectBtn');
             
-            if (!window.solana?.isPhantom) {
-                showMessage('Phantom wallet not found. Please install it.', 'error');
+            // Try to get Phantom provider
+            const provider = window.phantom?.solana || window.solana;
+            
+            if (!provider?.isPhantom) {
+                // Check if on mobile - redirect to Phantom app
+                if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    const url = encodeURIComponent(window.location.href);
+                    window.location.href = `https://phantom.app/ul/browse/${url}?ref=${url}`;
+                    return;
+                }
+                showMessage('Phantom wallet not found. Please install it from phantom.app', 'error');
                 return;
             }
             
@@ -370,8 +379,11 @@
             btn.textContent = 'Connecting...';
             
             try {
-                const resp = await window.solana.connect();
+                // Request connection
+                const resp = await provider.connect();
                 wallet = resp.publicKey.toString();
+                
+                console.log('Connected wallet:', wallet);
                 
                 document.getElementById('walletAddress').textContent = wallet;
                 document.getElementById('step1').classList.remove('active');
@@ -379,7 +391,12 @@
                 
                 await checkTier();
             } catch (err) {
-                showMessage('Connection failed: ' + err.message, 'error');
+                console.error('Connection error:', err);
+                if (err.code === 4001) {
+                    showMessage('Connection rejected. Please approve in Phantom.', 'error');
+                } else {
+                    showMessage('Connection failed: ' + (err.message || 'Unknown error'), 'error');
+                }
                 btn.disabled = false;
                 btn.textContent = '🔗 Connect Phantom';
             }
@@ -504,13 +521,40 @@
         }
         
         // Auto-connect if already connected
-        if (window.solana?.isConnected && window.solana?.publicKey) {
-            wallet = window.solana.publicKey.toString();
+        document.addEventListener('DOMContentLoaded', async () => {
+            const provider = window.phantom?.solana || window.solana;
+            
+            if (provider?.isConnected && provider?.publicKey) {
+                wallet = provider.publicKey.toString();
+                document.getElementById('walletAddress').textContent = wallet;
+                document.getElementById('step1').classList.remove('active');
+                document.getElementById('step2').classList.add('active');
+                await checkTier();
+            }
+            
+            // Listen for account changes
+            if (provider) {
+                provider.on('accountChanged', (publicKey) => {
+                    if (publicKey) {
+                        wallet = publicKey.toString();
+                        document.getElementById('walletAddress').textContent = wallet;
+                        checkTier();
+                    } else {
+                        // Disconnected
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+        
+        // Debug: manual wallet entry for testing
+        window.debugSetWallet = async (addr) => {
+            wallet = addr;
             document.getElementById('walletAddress').textContent = wallet;
             document.getElementById('step1').classList.remove('active');
             document.getElementById('step2').classList.add('active');
-            checkTier();
-        }
+            await checkTier();
+        };
     </script>
 </body>
 </html>
