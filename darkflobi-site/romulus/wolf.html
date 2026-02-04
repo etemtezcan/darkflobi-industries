@@ -89,6 +89,42 @@
             text-transform: uppercase;
         }
         
+        /* Tier badge */
+        .tier-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-family: 'VT323', monospace;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        
+        .tier-badge.trial { background: rgba(100,100,100,0.2); border: 1px solid #666; color: #888; }
+        .tier-badge.basic { background: rgba(57,255,20,0.1); border: 1px solid var(--green); color: var(--green); }
+        .tier-badge.standard { background: rgba(0,255,255,0.1); border: 1px solid var(--cyan); color: var(--cyan); }
+        .tier-badge.pro { background: rgba(212,175,55,0.1); border: 1px solid var(--pink); color: var(--pink); }
+        .tier-badge.power { background: rgba(255,255,0,0.1); border: 1px solid #ffff00; color: #ffff00; }
+        
+        .infra-status {
+            background: var(--darker);
+            border: 1px solid #333;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 0.8em;
+        }
+        
+        .infra-status .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+        }
+        
+        .infra-status .label { color: #666; }
+        .infra-status .value { color: var(--green); }
+        .infra-status .value.pending { color: #ffff00; }
+        
         /* Mood indicator */
         .mood-badge {
             display: inline-flex;

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spawn Your Wolf | Romulus</title>
-    <meta name="description" content="Spawn an AI wolf assistant. Reminders, tasks, and more.">
+    <meta name="description" content="Spawn an AI wolf. $ROMULUS holders get dedicated compute.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐺</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -12,9 +12,9 @@
             --pink: #D4AF37;
             --green: #39ff14;
             --cyan: #00ffff;
+            --yellow: #ffff00;
             --dark: #0a0a0c;
             --darker: #050507;
-            --gold: #D4AF37;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -24,47 +24,125 @@
             color: #e0e0e0;
             font-family: 'Space Mono', monospace;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
         }
         
-        .container { max-width: 500px; width: 100%; }
+        .container { max-width: 600px; margin: 0 auto; }
         
         .back-link { display: inline-block; color: #555; text-decoration: none; margin-bottom: 20px; }
         .back-link:hover { color: var(--pink); }
         
-        .spawn-box {
-            border: 1px solid #333;
-            padding: 30px;
-            background: var(--darker);
-        }
-        
-        .header-banner {
+        .header {
             border: 1px solid var(--pink);
             padding: 25px;
             margin-bottom: 25px;
             text-align: center;
             background: linear-gradient(180deg, rgba(212,175,55,0.05) 0%, transparent 100%);
-            box-shadow: 0 0 30px rgba(212,175,55,0.1);
         }
         
-        .header-banner h1 {
+        .header h1 {
             font-family: 'VT323', monospace;
             font-size: 2.2em;
             color: var(--pink);
-            text-shadow: 0 0 10px var(--pink), 0 0 20px rgba(212,175,55,0.5);
+            text-shadow: 0 0 10px var(--pink);
             margin-bottom: 8px;
         }
         
-        .header-banner .subtitle {
-            color: #888;
-            font-size: 0.9em;
+        .header .subtitle { color: #888; font-size: 0.9em; }
+        
+        .section {
+            border: 1px solid #333;
+            padding: 25px;
+            margin-bottom: 20px;
+            background: var(--darker);
         }
         
+        .section h2 {
+            font-family: 'VT323', monospace;
+            color: var(--pink);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        /* Wallet Connection */
+        .wallet-section { text-align: center; }
+        
+        .wallet-btn {
+            background: transparent;
+            border: 2px solid var(--cyan);
+            color: var(--cyan);
+            padding: 15px 30px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            font-size: 1.2em;
+            transition: all 0.2s;
+        }
+        
+        .wallet-btn:hover {
+            background: var(--cyan);
+            color: #000;
+            box-shadow: 0 0 20px var(--cyan);
+        }
+        
+        .wallet-connected {
+            display: none;
+            text-align: center;
+        }
+        
+        .wallet-address {
+            font-size: 0.8em;
+            color: var(--cyan);
+            background: #111;
+            padding: 10px;
+            margin-bottom: 15px;
+            word-break: break-all;
+        }
+        
+        /* Tier Display */
+        .tier-display {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid #333;
+            margin: 20px 0;
+        }
+        
+        .tier-display.trial { border-color: #666; }
+        .tier-display.basic { border-color: var(--green); }
+        .tier-display.standard { border-color: var(--cyan); }
+        .tier-display.pro { border-color: var(--pink); box-shadow: 0 0 15px rgba(212,175,55,0.2); }
+        .tier-display.power { border-color: var(--yellow); box-shadow: 0 0 20px rgba(255,255,0,0.2); }
+        
+        .tier-name {
+            font-family: 'VT323', monospace;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+        
+        .tier-display.trial .tier-name { color: #888; }
+        .tier-display.basic .tier-name { color: var(--green); }
+        .tier-display.standard .tier-name { color: var(--cyan); }
+        .tier-display.pro .tier-name { color: var(--pink); }
+        .tier-display.power .tier-name { color: var(--yellow); }
+        
+        .tier-balance { color: #666; font-size: 0.9em; margin-bottom: 10px; }
+        .tier-resources { color: var(--green); font-size: 0.85em; }
+        
+        .upgrade-prompt {
+            background: rgba(255,255,0,0.05);
+            border: 1px solid rgba(255,255,0,0.2);
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.85em;
+        }
+        
+        .upgrade-prompt a { color: var(--yellow); }
+        
+        /* Wolf Form */
+        .wolf-form { display: none; }
+        .wolf-form.visible { display: block; }
+        
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         
         .form-group label {
@@ -74,9 +152,9 @@
             font-size: 0.9em;
         }
         
-        .form-group input {
+        .form-group input, .form-group textarea {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: #111;
             border: 1px solid #333;
             color: #fff;
@@ -84,7 +162,7 @@
             font-size: 1em;
         }
         
-        .form-group input:focus { 
+        .form-group input:focus, .form-group textarea:focus { 
             outline: none; 
             border-color: var(--pink); 
         }
@@ -106,101 +184,157 @@
         
         .type-option:hover { border-color: #555; }
         .type-option.selected { 
-            border-color: var(--gold); 
+            border-color: var(--pink); 
             background: rgba(212,175,55,0.1); 
         }
         
-        .type-option .emoji { font-size: 1.8em; display: block; margin-bottom: 5px; }
+        .type-option .emoji { font-size: 1.6em; display: block; margin-bottom: 5px; }
         .type-option .name { font-size: 0.9em; color: #aaa; }
         .type-option .desc { font-size: 0.7em; color: #555; margin-top: 3px; }
+        .type-option .tier-req { font-size: 0.65em; color: var(--cyan); margin-top: 5px; }
         
-        .btn {
+        .type-option.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .spawn-btn {
             width: 100%;
-            background: transparent;
-            border: 2px solid var(--gold);
-            color: var(--gold);
+            background: var(--pink);
+            border: none;
+            color: #000;
             padding: 15px;
             cursor: pointer;
             font-family: 'VT323', monospace;
             font-size: 1.4em;
             transition: all 0.2s;
-            margin-top: 10px;
         }
         
-        .btn:hover { 
-            background: var(--gold); 
-            color: #000; 
-            box-shadow: 0 0 30px rgba(212,175,55,0.3);
+        .spawn-btn:hover { 
+            box-shadow: 0 0 30px rgba(212,175,55,0.4);
         }
         
-        .btn:disabled {
+        .spawn-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
         
-        .features {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #333;
+        /* Resources Preview */
+        .resources-preview {
+            background: #111;
+            border: 1px solid #333;
+            padding: 15px;
+            margin: 20px 0;
         }
         
-        .features h3 {
-            color: var(--cyan);
-            font-size: 0.9em;
-            margin-bottom: 15px;
+        .resource-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #222;
         }
         
-        .feature-list {
-            list-style: none;
-            color: #666;
-            font-size: 0.85em;
-        }
+        .resource-row:last-child { border: none; }
+        .resource-label { color: #666; }
+        .resource-value { color: var(--green); }
         
-        .feature-list li {
-            padding: 5px 0;
-            padding-left: 20px;
-            position: relative;
-        }
-        
-        .feature-list li::before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: var(--green);
-        }
-        
-        .error-msg {
-            background: rgba(255,68,68,0.1);
-            border: 1px solid #ff4444;
-            color: #ff6666;
-            padding: 12px;
+        /* Status Messages */
+        .status-msg {
+            padding: 15px;
             margin-bottom: 20px;
             display: none;
         }
         
-        .error-msg.show { display: block; }
+        .status-msg.show { display: block; }
+        .status-msg.error { background: rgba(255,68,68,0.1); border: 1px solid #ff4444; color: #ff6666; }
+        .status-msg.success { background: rgba(57,255,20,0.1); border: 1px solid var(--green); color: var(--green); }
+        .status-msg.info { background: rgba(0,255,255,0.1); border: 1px solid var(--cyan); color: var(--cyan); }
+        
+        /* Tier Grid */
+        .tier-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .tier-card {
+            border: 1px solid #333;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.8em;
+        }
+        
+        .tier-card.active { border-color: var(--pink); }
+        .tier-card .name { color: var(--pink); font-family: 'VT323', monospace; font-size: 1.2em; }
+        .tier-card .req { color: #666; margin: 5px 0; }
+        .tier-card .specs { color: var(--green); }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #444;
+            font-size: 0.8em;
+        }
+        
+        .footer a { color: var(--pink); text-decoration: none; }
     </style>
 </head>
 <body>
     <div class="container">
         <a href="/romulus/" class="back-link">← back to romulus</a>
         
-        <div class="spawn-box">
-            <div class="header-banner">
-                <h1>🐺 Spawn Your Wolf</h1>
-                <p class="subtitle">your personal AI assistant</p>
+        <div class="header">
+            <h1>🐺 Spawn Your Wolf</h1>
+            <p class="subtitle">$ROMULUS holders get dedicated compute</p>
+        </div>
+        
+        <div class="status-msg" id="statusMsg"></div>
+        
+        <!-- Step 1: Connect Wallet -->
+        <div class="section wallet-section" id="walletSection">
+            <h2>Step 1: Connect Wallet</h2>
+            <p style="color: #666; margin-bottom: 20px; font-size: 0.9em;">
+                Connect your Solana wallet to check your $ROMULUS holdings and tier.
+            </p>
+            <button class="wallet-btn" id="connectBtn" onclick="connectWallet()">
+                🔗 CONNECT PHANTOM
+            </button>
+            <p style="color: #444; margin-top: 15px; font-size: 0.75em;">
+                No wallet? <a href="https://phantom.app" target="_blank" style="color: var(--cyan);">Get Phantom →</a>
+            </p>
+        </div>
+        
+        <!-- Connected State -->
+        <div class="wallet-connected" id="connectedSection">
+            <div class="section">
+                <h2>Your Tier</h2>
+                <div class="wallet-address" id="walletAddress"></div>
+                
+                <div class="tier-display" id="tierDisplay">
+                    <div class="tier-name" id="tierName">Checking...</div>
+                    <div class="tier-balance" id="tierBalance"></div>
+                    <div class="tier-resources" id="tierResources"></div>
+                </div>
+                
+                <div class="upgrade-prompt" id="upgradePrompt" style="display: none;">
+                    <strong>⚡ Upgrade Available</strong><br>
+                    Hold <span id="upgradeAmount"></span> $ROMULUS to unlock <span id="upgradeTier"></span> tier.<br>
+                    <a href="https://pump.fun/coin/5ruEtrHGgqxE3Zo1UdRAvVrdetLwq6SFJvLjgth6pump" target="_blank">Get $ROMULUS →</a>
+                </div>
             </div>
             
-            <div class="error-msg" id="errorMsg"></div>
-            
-            <form id="spawnForm">
+            <!-- Step 2: Configure Wolf -->
+            <div class="section wolf-form" id="wolfForm">
+                <h2>Step 2: Configure Your Wolf</h2>
+                
                 <div class="form-group">
                     <label>Name your wolf</label>
-                    <input type="text" id="wolfName" placeholder="e.g. Atlas, Scout, Nova..." required minlength="2" maxlength="24" autocomplete="off">
+                    <input type="text" id="wolfName" placeholder="e.g. Atlas, Nova, Shadow..." maxlength="24">
                 </div>
                 
                 <div class="form-group">
-                    <label>Choose a type</label>
+                    <label>Wolf type</label>
                     <div class="type-grid">
                         <div class="type-option selected" data-type="assistant" onclick="selectType(this)">
                             <span class="emoji">📋</span>
@@ -210,74 +344,230 @@
                         <div class="type-option" data-type="scout" onclick="selectType(this)">
                             <span class="emoji">👁️</span>
                             <span class="name">Scout</span>
-                            <span class="desc">finds intel</span>
+                            <span class="desc">monitoring & alerts</span>
                         </div>
                         <div class="type-option" data-type="research" onclick="selectType(this)">
                             <span class="emoji">📚</span>
                             <span class="name">Research</span>
-                            <span class="desc">deep analysis</span>
+                            <span class="desc">analysis & reports</span>
+                            <span class="tier-req">Standard+</span>
                         </div>
                         <div class="type-option" data-type="builder" onclick="selectType(this)">
                             <span class="emoji">🔧</span>
                             <span class="name">Builder</span>
-                            <span class="desc">gets things done</span>
+                            <span class="desc">code & automation</span>
+                            <span class="tier-req">Pro+</span>
                         </div>
                     </div>
                 </div>
                 
-                <button type="submit" class="btn" id="spawnBtn">⚡ SPAWN WOLF</button>
-            </form>
-            
-            <div class="features">
-                <h3>What your wolf can do:</h3>
-                <ul class="feature-list">
-                    <li>Set reminders ("remind me in 2h to...")</li>
-                    <li>Track tasks and to-dos</li>
-                    <li>Search the web for intel</li>
-                    <li>Daily briefings</li>
-                    <li>Personality that grows with you</li>
-                </ul>
-                <p style="color: #888; margin-top: 15px; font-size: 0.8em;">
-                    ⏳ Free trial: 24 hours or 10 messages<br>
-                    ⚡ Upgrade anytime for 10,000 $ROMULUS
-                </p>
+                <div class="resources-preview" id="resourcesPreview">
+                    <div class="resource-row">
+                        <span class="resource-label">Compute Type</span>
+                        <span class="resource-value" id="resType">--</span>
+                    </div>
+                    <div class="resource-row">
+                        <span class="resource-label">CPU Cores</span>
+                        <span class="resource-value" id="resCores">--</span>
+                    </div>
+                    <div class="resource-row">
+                        <span class="resource-label">Memory</span>
+                        <span class="resource-value" id="resMemory">--</span>
+                    </div>
+                    <div class="resource-row">
+                        <span class="resource-label">Duration</span>
+                        <span class="resource-value" id="resDuration">--</span>
+                    </div>
+                </div>
+                
+                <button class="spawn-btn" id="spawnBtn" onclick="spawnWolf()">
+                    ⚡ SPAWN WOLF
+                </button>
             </div>
+        </div>
+        
+        <!-- Tier Overview -->
+        <div class="section">
+            <h2>📊 Tier Overview</h2>
+            <p style="color: #666; font-size: 0.85em; margin-bottom: 15px;">
+                Your $ROMULUS holdings determine your compute tier:
+            </p>
+            <div class="tier-grid">
+                <div class="tier-card">
+                    <div class="name">TRIAL</div>
+                    <div class="req">0 $ROMULUS</div>
+                    <div class="specs">Serverless • 24h/10msg</div>
+                </div>
+                <div class="tier-card">
+                    <div class="name">BASIC</div>
+                    <div class="req">100K $ROMULUS</div>
+                    <div class="specs">1 CPU • 1GB RAM</div>
+                </div>
+                <div class="tier-card">
+                    <div class="name">STANDARD</div>
+                    <div class="req">500K $ROMULUS</div>
+                    <div class="specs">2 CPU • 2GB RAM</div>
+                </div>
+                <div class="tier-card">
+                    <div class="name">PRO</div>
+                    <div class="req">1M $ROMULUS</div>
+                    <div class="specs">4 CPU • 4GB RAM</div>
+                </div>
+            </div>
+            <p style="color: #444; font-size: 0.75em; margin-top: 15px; text-align: center;">
+                <a href="/romulus/infra.html" style="color: var(--cyan);">Learn more about infrastructure →</a>
+            </p>
+        </div>
+        
+        <div class="footer">
+            <a href="/romulus/">Romulus</a> · <a href="/">darkflobi</a>
         </div>
     </div>
     
     <script>
+        let wallet = null;
+        let tierData = null;
         let selectedType = 'assistant';
         
+        const TIER_REQUIREMENTS = {
+            assistant: 'trial',
+            scout: 'trial', 
+            research: 'standard',
+            builder: 'pro'
+        };
+        
+        const TIER_ORDER = ['trial', 'basic', 'standard', 'pro', 'power'];
+        
+        function tierMeetsRequirement(userTier, requiredTier) {
+            return TIER_ORDER.indexOf(userTier) >= TIER_ORDER.indexOf(requiredTier);
+        }
+        
+        function showStatus(msg, type = 'info') {
+            const el = document.getElementById('statusMsg');
+            el.textContent = msg;
+            el.className = `status-msg show ${type}`;
+        }
+        
+        function hideStatus() {
+            document.getElementById('statusMsg').className = 'status-msg';
+        }
+        
+        async function connectWallet() {
+            const btn = document.getElementById('connectBtn');
+            
+            if (!window.solana || !window.solana.isPhantom) {
+                showStatus('Phantom wallet not found. Please install it first.', 'error');
+                return;
+            }
+            
+            btn.textContent = 'Connecting...';
+            btn.disabled = true;
+            
+            try {
+                const resp = await window.solana.connect();
+                wallet = resp.publicKey.toString();
+                
+                document.getElementById('walletAddress').textContent = wallet;
+                document.getElementById('walletSection').style.display = 'none';
+                document.getElementById('connectedSection').style.display = 'block';
+                
+                await checkTier();
+                
+            } catch (err) {
+                showStatus('Failed to connect: ' + err.message, 'error');
+                btn.textContent = '🔗 CONNECT PHANTOM';
+                btn.disabled = false;
+            }
+        }
+        
+        async function checkTier() {
+            try {
+                const res = await fetch(`/.netlify/functions/wolf-infra?wallet=${wallet}`);
+                tierData = await res.json();
+                
+                const display = document.getElementById('tierDisplay');
+                display.className = `tier-display ${tierData.tier}`;
+                
+                document.getElementById('tierName').textContent = tierData.tierName.toUpperCase() + ' TIER';
+                document.getElementById('tierBalance').textContent = `${tierData.balance.toLocaleString()} $ROMULUS`;
+                
+                if (tierData.resources) {
+                    document.getElementById('tierResources').textContent = 
+                        `${tierData.resources.cores} CPU • ${tierData.resources.memory}MB RAM`;
+                } else {
+                    document.getElementById('tierResources').textContent = 'Serverless (limited)';
+                }
+                
+                // Show upgrade prompt if not at max tier
+                if (tierData.nextTier) {
+                    document.getElementById('upgradePrompt').style.display = 'block';
+                    document.getElementById('upgradeAmount').textContent = tierData.nextTier.required.toLocaleString();
+                    document.getElementById('upgradeTier').textContent = tierData.nextTier.name;
+                }
+                
+                // Show wolf form
+                document.getElementById('wolfForm').classList.add('visible');
+                updateResourcesPreview();
+                updateTypeAvailability();
+                
+            } catch (err) {
+                showStatus('Failed to check tier: ' + err.message, 'error');
+            }
+        }
+        
+        function updateTypeAvailability() {
+            document.querySelectorAll('.type-option').forEach(opt => {
+                const type = opt.dataset.type;
+                const required = TIER_REQUIREMENTS[type];
+                
+                if (!tierMeetsRequirement(tierData.tier, required)) {
+                    opt.classList.add('locked');
+                    if (opt.classList.contains('selected')) {
+                        opt.classList.remove('selected');
+                        document.querySelector('[data-type="assistant"]').classList.add('selected');
+                        selectedType = 'assistant';
+                    }
+                } else {
+                    opt.classList.remove('locked');
+                }
+            });
+        }
+        
         function selectType(el) {
+            if (el.classList.contains('locked')) {
+                const required = TIER_REQUIREMENTS[el.dataset.type];
+                showStatus(`${el.querySelector('.name').textContent} requires ${required.toUpperCase()} tier or higher.`, 'info');
+                return;
+            }
+            
             document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
             el.classList.add('selected');
             selectedType = el.dataset.type;
+            hideStatus();
         }
         
-        function generateWolfId() {
-            return 'wolf_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
-        }
-        
-        function showError(msg) {
-            const el = document.getElementById('errorMsg');
-            el.textContent = msg;
-            el.classList.add('show');
-        }
-        
-        document.getElementById('spawnForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        function updateResourcesPreview() {
+            if (!tierData) return;
             
+            const isMicroVM = tierData.tierType === 'microvm';
+            
+            document.getElementById('resType').textContent = isMicroVM ? 'Dedicated microVM' : 'Serverless';
+            document.getElementById('resCores').textContent = isMicroVM ? tierData.resources.cores : 'Shared';
+            document.getElementById('resMemory').textContent = isMicroVM ? `${tierData.resources.memory}MB` : 'Shared';
+            document.getElementById('resDuration').textContent = isMicroVM ? 'Unlimited' : '24h / 10 messages';
+        }
+        
+        async function spawnWolf() {
             const name = document.getElementById('wolfName').value.trim();
             const btn = document.getElementById('spawnBtn');
             
             if (!name || name.length < 2) {
-                showError('Give your wolf a name (at least 2 characters)');
+                showStatus('Give your wolf a name (at least 2 characters)', 'error');
                 return;
             }
             
-            // Check for invalid characters
             if (!/^[a-zA-Z0-9_-]+$/.test(name)) {
-                showError('Name can only contain letters, numbers, - and _');
+                showStatus('Name can only contain letters, numbers, - and _', 'error');
                 return;
             }
             
@@ -285,62 +575,66 @@
             btn.textContent = 'Spawning...';
             
             try {
-                // Generate unique wolf ID
-                const wolfId = generateWolfId();
-                
-                // Initialize wolf data in backend
-                const res = await fetch('/.netlify/functions/wolf-assistant', {
+                const res = await fetch('/.netlify/functions/wolf-infra', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        wolfId,
+                        action: 'spawn',
+                        wallet,
                         wolfName: name,
-                        action: 'init',
                         wolfType: selectedType
                     })
                 });
                 
-                // Store wolf info locally
-                const wolfData = {
-                    id: wolfId,
-                    name: name,
-                    type: selectedType,
-                    createdAt: Date.now()
-                };
+                const data = await res.json();
                 
-                // Save to localStorage
-                localStorage.setItem('wolf_current', JSON.stringify(wolfData));
+                if (data.success) {
+                    // Store wolf data
+                    const wolfData = {
+                        id: data.wolfId || data.agentId,
+                        name,
+                        type: selectedType,
+                        tier: data.tier,
+                        url: data.agentUrl,
+                        wallet,
+                        createdAt: Date.now()
+                    };
+                    
+                    localStorage.setItem('wolf_current', JSON.stringify(wolfData));
+                    
+                    // Add to list
+                    let wolves = JSON.parse(localStorage.getItem('wolf_list') || '[]');
+                    wolves.push(wolfData);
+                    localStorage.setItem('wolf_list', JSON.stringify(wolves));
+                    
+                    if (data.pending) {
+                        showStatus(data.message, 'info');
+                        setTimeout(() => {
+                            window.location.href = `/romulus/wolf.html?id=${wolfData.id}`;
+                        }, 2000);
+                    } else {
+                        window.location.href = `/romulus/wolf.html?id=${wolfData.id}`;
+                    }
+                } else {
+                    throw new Error(data.error || 'Spawn failed');
+                }
                 
-                // Also save to list of wolves
-                let wolves = JSON.parse(localStorage.getItem('wolf_list') || '[]');
-                wolves.push(wolfData);
-                localStorage.setItem('wolf_list', JSON.stringify(wolves));
-                
-                // Redirect to manage page
-                window.location.href = `/romulus/wolf.html?id=${wolfId}`;
-                
-            } catch (error) {
+            } catch (err) {
+                showStatus('Spawn failed: ' + err.message, 'error');
                 btn.disabled = false;
                 btn.textContent = '⚡ SPAWN WOLF';
-                showError('Failed to spawn wolf: ' + error.message);
             }
-        });
+        }
         
-        // Check if user already has a wolf
-        const existingWolf = localStorage.getItem('wolf_current');
-        if (existingWolf) {
-            try {
-                const wolf = JSON.parse(existingWolf);
-                // Add a "continue with existing" option
-                const container = document.querySelector('.spawn-box');
-                const notice = document.createElement('div');
-                notice.style.cssText = 'background: rgba(0,255,255,0.1); border: 1px solid var(--cyan); padding: 15px; margin-bottom: 20px; text-align: center;';
-                notice.innerHTML = `
-                    <p style="color: var(--cyan); margin-bottom: 10px;">You have an existing wolf: <strong>${wolf.name}</strong></p>
-                    <a href="/romulus/wolf.html?id=${wolf.id}" style="color: var(--green);">Continue with ${wolf.name} →</a>
-                `;
-                container.insertBefore(notice, container.querySelector('form'));
-            } catch (e) {}
+        // Check for existing wallet connection
+        if (window.solana?.isConnected) {
+            wallet = window.solana.publicKey?.toString();
+            if (wallet) {
+                document.getElementById('walletAddress').textContent = wallet;
+                document.getElementById('walletSection').style.display = 'none';
+                document.getElementById('connectedSection').style.display = 'block';
+                checkTier();
+            }
         }
     </script>
 </body>
